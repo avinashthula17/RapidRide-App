@@ -1,4 +1,5 @@
 // Load environment variables FIRST
+// Force Railway redeploy - 2025-12-10
 require('dotenv').config();
 
 const express = require('express');
