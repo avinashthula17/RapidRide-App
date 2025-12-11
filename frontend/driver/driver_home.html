@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Driver Home — RapidRide</title>
   <link rel="stylesheet" href="../common/css/global.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -25,7 +26,7 @@
       top: 0;
       z-index: 100;
     }
-    
+
     .topbar-left {
       display: flex;
       align-items: center;
@@ -33,9 +34,9 @@
       font-size: 1.2rem;
       font-weight: 700;
     }
-    
-    .mini-logo { 
-      height: 40px; 
+
+    .mini-logo {
+      height: 40px;
     }
 
     .topbar-right {
@@ -118,35 +119,35 @@
       height: 100%;
       object-fit: cover;
     }
-    
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
     }
-    
+
     .welcome-section {
       margin-bottom: 2rem;
     }
-    
+
     .welcome-section h1 {
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
-    
+
     .welcome-section p {
       color: var(--text-muted);
       font-size: 1rem;
     }
-    
+
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1.5rem;
       margin-top: 2rem;
     }
-    
+
     .glass-card {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
@@ -154,23 +155,23 @@
       padding: 1.5rem;
       backdrop-filter: blur(10px);
     }
-    
+
     .glass-card h3 {
       font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
-    
+
     .glass-card p {
       color: var(--text-muted);
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
-    
+
     .rr-map {
       width: 100%;
       height: 300px;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 12px;
       margin-top: 1rem;
       position: relative;
@@ -234,7 +235,7 @@
     .quick-link-btn:active {
       transform: translateY(0);
     }
-    
+
     .status-container {
       display: flex;
       align-items: center;
@@ -244,7 +245,7 @@
       border-radius: 12px;
       margin: 1rem 0;
     }
-    
+
     .status-indicator {
       width: 12px;
       height: 12px;
@@ -252,23 +253,30 @@
       background: #ef4444;
       box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
     }
-    
+
     .status-online .status-indicator {
       background: #22c55e;
       box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2), 0 0 20px rgba(34, 197, 94, 0.4);
       animation: pulse 2s ease-in-out infinite;
     }
-    
+
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
     }
-    
+
     .status-text {
       font-weight: 600;
       font-size: 1rem;
     }
-    
+
     .btn-group {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -331,22 +339,25 @@
       font-size: 1.1rem;
       text-align: right;
     }
-    
+
     .slide-up {
       animation: slideUp 0.5s ease-out forwards;
-      opacity: 1; /* Ensure final state is visible */
+      opacity: 1;
+      /* Ensure final state is visible */
     }
-    
+
     @keyframes slideUp {
       from {
         opacity: 0;
         transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
     .notification-modal {
       position: fixed;
       inset: 0;
@@ -468,6 +479,7 @@
   </style>
   <script src="../../../../../../../common/js/config.js"></script>
 </head>
+
 <body>
   <!-- Notification Modal -->
   <div class="notification-modal" id="notificationModal">
@@ -475,7 +487,8 @@
       <div class="notification-header">
         <h3>Notifications</h3>
         <div class="notification-close" onclick="closeNotifications()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -494,11 +507,14 @@
   <header class="topbar">
     <div class="topbar-left">
       <img src="../assets/logo.png" alt="RapidRide" class="mini-logo" onerror="this.style.display='none'">
-      <span style="background: linear-gradient(to right, #fff, #a5b4fc); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">RapidRide Captain</span>
+      <span
+        style="background: linear-gradient(to right, #fff, #a5b4fc); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">RapidRide
+        Captain</span>
     </div>
     <div class="topbar-right">
       <button class="notification-btn" id="notificationBtn" onclick="toggleNotifications()" title="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
         </svg>
@@ -516,7 +532,7 @@
         <h1>Welcome back, <span id="driverName" style="color: var(--accent);">Captain</span>!</h1>
         <p>Ready to start earning? Go online to accept ride requests.</p>
       </div>
-      
+
       <!-- Compact Status Control -->
       <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem;">
         <div id="statusContainer" class="status-container" style="padding: 0.5rem 1rem;">
@@ -525,11 +541,20 @@
         </div>
         <div class="btn-group" style="display: flex; gap: 0.5rem; margin: 0;">
           <button class="btn btn-primary" id="goOnline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
             Go Online
           </button>
-          <button class="btn btn-secondary" id="goOffline" style="opacity: 0.5; padding: 0.5rem 1rem; font-size: 0.9rem;" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+          <button class="btn btn-secondary" id="goOffline"
+            style="opacity: 0.5; padding: 0.5rem 1rem; font-size: 0.9rem;" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" style="margin-right: 0.4rem;">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+            </svg>
             Go Offline
           </button>
         </div>
@@ -544,11 +569,13 @@
             <h3 style="margin: 0;">📋 Ride Requests</h3>
             <p style="margin: 0.25rem 0 0 0;">Pending ride requests near you</p>
           </div>
-          <span id="requestCount" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">0</span>
+          <span id="requestCount"
+            style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">0</span>
         </div>
         <div id="rideRequestList" style="max-height: 200px; overflow-y: auto;">
           <div style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.75rem; opacity: 0.5;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.75rem; opacity: 0.5;">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="9" y1="9" x2="15" y2="9"></line>
               <line x1="9" y1="15" x2="15" y2="15"></line>
@@ -565,7 +592,8 @@
         <p>Your current position updates in real-time</p>
         <div id="driverMap" class="rr-map">
           <button class="locate-btn" onclick="locateMe()" title="Show my location">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <circle cx="12" cy="12" r="3"></circle>
               <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -619,17 +647,20 @@
         <p>Navigate to important sections</p>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
           <button class="quick-link-btn" onclick="window.location.href='earnings.html'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.75rem; flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" style="margin-right: 0.75rem; flex-shrink: 0;">
               <line x1="12" y1="1" x2="12" y2="23"></line>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
             <div style="text-align: left;">
               <div style="font-weight: 700; font-size: 1rem;">View Earnings</div>
-              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Track your income and payouts</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Track your income and
+                payouts</div>
             </div>
           </button>
           <button class="quick-link-btn" onclick="window.location.href='help.html'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.75rem; flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" style="margin-right: 0.75rem; flex-shrink: 0;">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
               <line x1="12" y1="17" x2="12.01" y2="17"></line>
@@ -658,7 +689,7 @@
   <script>
     (async function () {
       console.log('Driver home script starting...');
-      
+
       // Wait for Firebase auth to be ready (with timeout)
       if (typeof firebase !== 'undefined' && firebase.auth) {
         try {
@@ -676,11 +707,11 @@
             }),
             new Promise((resolve) => setTimeout(() => resolve(null), 3000)) // 3 second timeout
           ]);
-          
+
           // Only proceed with API calls if Firebase user is authenticated
           if (authUser) {
             console.log('Updating stats for authenticated user');
-            
+
             // Initialize Socket.IO now that Firebase auth is ready
             if (typeof DriverSocket !== 'undefined') {
               console.log('🔌 Initializing DriverSocket with Firebase auth...');
@@ -693,8 +724,8 @@
           console.log('Firebase auth check failed:', e);
         }
       }
-      
-      try { await Auth.populateFromServer().catch(() => {}); } catch (e) {}
+
+      try { await Auth.populateFromServer().catch(() => { }); } catch (e) { }
       const u = Auth.currentUser();
       const nameSpan = document.getElementById('driverName');
       if (nameSpan && u && u.name) nameSpan.textContent = u.name;
@@ -714,14 +745,14 @@
       async function updateTotalStats() {
         try {
           const response = await apiFetch('/auth/stats');
-          
+
           if (response.ok && response.data) {
             const stats = response.data.stats;
-            
+
             // Update total stats UI
             document.getElementById('totalRidesCount').textContent = stats.completedRides || 0;
             document.getElementById('totalEarnings').textContent = `₹${stats.totalEarnings || 0}`;
-            
+
             // Display rating
             if (stats.totalRatings > 0 && stats.rating > 0) {
               document.getElementById('totalRating').textContent = `★ ${stats.rating.toFixed(1)}`;
@@ -738,10 +769,10 @@
       async function updateTodayStats() {
         try {
           const response = await apiFetch('/auth/stats/today');
-          
+
           if (response.ok && response.data) {
             const stats = response.data.todayStats;
-            
+
             // Update UI
             document.getElementById('todayRidesCount').textContent = stats.completedRides || 0;
             // Distance is already in km from backend, no need to divide
@@ -752,12 +783,12 @@
           // Keep default values (0 and 0 km)
         }
       }
-      
+
       // Update stats on load (only if Firebase user exists)
       if (firebase && firebase.auth && firebase.auth().currentUser) {
         updateTotalStats();
         updateTodayStats();
-        
+
         // Update stats every 5 minutes
         setInterval(() => {
           updateTotalStats();
@@ -799,7 +830,7 @@
         watching = true;
         if (statusEl) statusEl.textContent = 'Online';
         if (statusContainer) statusContainer.classList.add('status-online');
-        
+
         goOnlineBtn.style.opacity = '0.5';
         goOnlineBtn.disabled = true;
         goOfflineBtn.style.opacity = '1';
@@ -809,7 +840,7 @@
         if (u && u.id) {
           const vehicleType = u.vehicle?.type || 'Sedan';
           console.log(`🟢 Going ONLINE - Vehicle Type: ${vehicleType}`);
-          
+
           try {
             DriverSocket.goOnline(u.id, vehicleType);
             // Request notification permission
@@ -830,30 +861,33 @@
 
         if (mapApi) {
           mapApi.startWatch(async (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
 
-          // Update location via Socket.IO
-          try {
-            if (u && u.id) {
-              DriverSocket.updateLocation(u.id, { lat, lng });
-              // Track activity on location update
-              DriverSocket.updateActivity();
+            // Update location via Socket.IO
+            try {
+              if (u && u.id) {
+                DriverSocket.updateLocation(u.id, { lat, lng });
+                // Track activity on location update
+                DriverSocket.updateActivity();
+              }
+            } catch (e) {
+              console.warn('Socket location update failed', e);
             }
-          } catch (e) {
-            console.warn('Socket location update failed', e);
-          }
 
-          // OPTIONAL: send to backend REST API
-          try {
-            await apiFetch('/driver/location', {
-              method: 'POST',
-              body: { lat, lng }
-            });
-          } catch (err) {
-            console.warn('backend location send failed', err);
-          }
-        });
+            // OPTIONAL: send to backend REST API
+            try {
+              const res = await apiFetch('/driver/location', {
+                method: 'POST',
+                body: { lat, lng }
+              });
+              if (!res.ok) {
+                console.error('Frontend reported backend error:', res.data?.error || res.data?.message || res.status);
+              }
+            } catch (err) {
+              console.warn('backend location send failed', err);
+            }
+          });
         }
       }
 
@@ -866,7 +900,7 @@
         if (mapApi) mapApi.stopWatch();
         if (statusEl) statusEl.textContent = 'Offline';
         if (statusContainer) statusContainer.classList.remove('status-online');
-        
+
         goOnlineBtn.style.opacity = '1';
         goOnlineBtn.disabled = false;
         goOfflineBtn.style.opacity = '0.5';
@@ -886,7 +920,7 @@
 
       if (goOnlineBtn) goOnlineBtn.addEventListener('click', startBroadcast);
       if (goOfflineBtn) goOfflineBtn.addEventListener('click', stopBroadcast);
-      
+
       // Init state
       if (goOfflineBtn) {
         goOfflineBtn.style.opacity = '0.5';
@@ -898,17 +932,17 @@
         try {
           const savedState = localStorage.getItem('driver_online_state');
           const lastActivity = localStorage.getItem('driver_last_activity');
-          
+
           if (savedState && lastActivity) {
             const state = JSON.parse(savedState);
             const timeSinceActivity = Date.now() - parseInt(lastActivity);
             const ONE_HOUR = 60 * 60 * 1000;
-            
+
             // If less than 1 hour since last activity, restore online state
             if (timeSinceActivity < ONE_HOUR && u && u.id === state.userId) {
               console.log('🔄 Restoring online state from previous session...');
               console.log(`⏰ ${Math.round(timeSinceActivity / 60000)} minutes since last activity`);
-              
+
               // Automatically go online
               setTimeout(() => {
                 startBroadcast();
@@ -926,7 +960,7 @@
 
       // Check for previous online state after initialization
       setTimeout(checkPreviousOnlineState, 500);
-      
+
       console.log('Driver home script completed successfully');
     })().catch(err => {
       console.error('Driver home initialization error:', err);
@@ -954,7 +988,7 @@
       ];
 
       const container = document.getElementById('notificationList');
-      
+
       if (mockNotifications.length === 0) {
         container.innerHTML = `
           <div class="notification-empty">
@@ -975,7 +1009,7 @@
             <div class="notification-time">${notif.time}</div>
           </div>
         `).join('');
-        
+
         const unreadCount = mockNotifications.filter(n => !n.read).length;
         updateNotificationBadge(unreadCount);
       }
@@ -1000,7 +1034,7 @@
     }
 
     // Make updateRideRequests available globally for Socket callback
-    window.updateRideRequests = function(requests) {
+    window.updateRideRequests = function (requests) {
       renderRideRequests(requests);
       // Update notification badge
       updateNotificationBadge(requests.length);
@@ -1010,14 +1044,14 @@
     function renderRideRequests(requests) {
       const listContainer = document.getElementById('rideRequestList');
       const countBadge = document.getElementById('requestCount');
-      
+
       if (!listContainer || !countBadge) return;
-      
+
       // Store requests globally
       currentRideRequests = requests;
-      
+
       countBadge.textContent = requests.length;
-      
+
       if (requests.length === 0) {
         listContainer.innerHTML = `
           <div style="text-align: center; color: var(--text-muted); padding: 2rem 1rem;">
@@ -1032,7 +1066,7 @@
         `;
         return;
       }
-      
+
       listContainer.innerHTML = requests.map(request => `
         <div class="ride-request-item" style="cursor: default;">
           <div class="request-header">
@@ -1077,12 +1111,12 @@
 
     // Store current ride requests globally
     let currentRideRequests = [];
-    
+
     // Function to view request details (navigate to request page)
-    window.viewRequestDetails = function(requestId) {
+    window.viewRequestDetails = function (requestId) {
       // Find the request data
       const request = currentRideRequests.find(r => r.rideId === requestId);
-      
+
       if (request) {
         // Store requests in sessionStorage for the request page
         sessionStorage.setItem('rideRequests', JSON.stringify(currentRideRequests));
@@ -1091,11 +1125,11 @@
         console.error('Request not found:', requestId);
       }
     };
-    
+
     // Function to accept ride directly from list
-    window.acceptRideDirectly = async function(rideId) {
+    window.acceptRideDirectly = async function (rideId) {
       const request = currentRideRequests.find(r => r.rideId === rideId);
-      
+
       if (!request) {
         alert('Ride request not found');
         return;
@@ -1121,9 +1155,9 @@
 
         // Store ride data in sessionStorage
         sessionStorage.setItem('acceptedRide', JSON.stringify(response.data.ride));
-        
+
         alert('Ride accepted successfully!');
-        
+
         // Redirect to active ride page
         window.location.href = `ride_active.html?rideId=${rideId}`;
 
@@ -1132,7 +1166,7 @@
         alert('Failed to accept ride: ' + error.message);
       }
     };
-    
+
     // Get API base URL
     const API_BASE = API_CONFIG.BASE_URL;
 
@@ -1158,10 +1192,10 @@
     // renderRideRequests(sampleRequests);
 
     // Locate me function - center map on user's current location (expose globally)
-    window.locateMe = async function() {
+    window.locateMe = async function () {
       const mapApi = window.driverMapApi; // Reference to map API
       const btn = event?.target?.closest('.locate-btn');
-      
+
       if (mapApi) {
         try {
           // Add loading state
@@ -1169,9 +1203,9 @@
             btn.style.opacity = '0.6';
             btn.style.pointerEvents = 'none';
           }
-          
+
           const result = await mapApi.locateOnce();
-          
+
           // Add smooth animation
           if (result && result.lat && result.lng) {
             mapApi.map.flyTo([result.lat, result.lng], 16, {
@@ -1179,7 +1213,7 @@
               easeLinearity: 0.25
             });
           }
-          
+
           // Reset button state
           setTimeout(() => {
             if (btn) {
@@ -1190,7 +1224,7 @@
         } catch (e) {
           console.warn('Failed to get location:', e);
           alert('Unable to get your location. Please check location permissions.');
-          
+
           // Reset button state on error
           if (btn) {
             btn.style.opacity = '1';
@@ -1202,4 +1236,5 @@
   </script>
   <script src="../common/js/confirm-logout.js"></script>
 </body>
+
 </html>
