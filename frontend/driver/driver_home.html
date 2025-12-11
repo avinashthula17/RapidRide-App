@@ -750,7 +750,7 @@
 </head>
 
 <body>
-  < !-- Notification Modal -->
+  <!-- Notification Modal -->
     <div class="notification-modal" id="notificationModal">
       <div class="notification-modal-content">
         <div class="notification-header">
@@ -792,7 +792,7 @@
           </h1>
           <p>Ready to start earning? Go online to accept ride requests.</p>
         </div>
-        < !-- Compact Status Control -->
+        <!-- Compact Status Control -->
           <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem;">
             <div id="statusContainer" class="status-container" style="padding: 0.5rem 1rem;"><span
                 class="status-indicator"></span><span id="driverStatus" class="status-text">Offline</span></div>
@@ -815,7 +815,7 @@
           </div>
       </div>
       <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
-        < !-- Ride Requests Card (Left) -->
+        <!-- Ride Requests Card (Left) -->
           <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
               <div>
@@ -837,7 +837,7 @@
               </div>
             </div>
           </div>
-          < !-- Live Map Card (Right) -->
+          <!-- Live Map Card (Right) -->
             <div class="glass-card">
               <h3>📍 Live Location</h3>
               <p>Your current position updates in real-time</p>
@@ -852,7 +852,7 @@
                     <line x1="18" y1="12" x2="22" y2="12"></line>
                   </svg></button></div>
             </div>
-            < !-- Total Stats Card - Full Width -->
+            <!-- Total Stats Card - Full Width -->
               <div class="glass-card" style="grid-column: 1 / -1;">
                 <h3>📈 Total Stats</h3>
                 <p>Your overall performance</p>
@@ -876,7 +876,7 @@
                   </div>
                 </div>
               </div>
-              < !-- Today's Stats Card - Full Width -->
+              <!-- Today's Stats Card - Full Width -->
                 <div class="glass-card" style="grid-column: 1 / -1;">
                   <h3>📊 Today's Stats</h3>
                   <p>Your performance summary for today</p>
@@ -895,7 +895,7 @@
                     </div>
                   </div>
                 </div>
-                < !-- Quick Links Card - Full Width -->
+                <!-- Quick Links Card - Full Width -->
                   <div class="glass-card" style="grid-column: 1 / -1;">
                     <h3>🔗 Quick Links</h3>
                     <p>Navigate to important sections</p>
@@ -1549,11 +1549,7 @@
           });
 
           if (res.ok) {
-            alert(`Success ! Cleared $ {
-            res.data.count
-          }
-
-          active rides.`);
+            alert(`Success! Cleared ${res.data.count} active rides.`);
             window.location.reload();
           }
 
@@ -1577,12 +1573,12 @@
         ;
     </script>
     <script src="../common/js/confirm-logout.js"></script>
-    < !-- Large Ride Request Modal (Vanilla CSS) -->
+    <!-- Large Ride Request Modal (Vanilla CSS) -->
       <div id="rideRequestModal" class="ride-request-modal hidden">
         <div class="ride-request-card">
-          < !-- Pulsing Background Effect -->
+          <!-- Pulsing Background Effect -->
             <div class="pulse-bg"></div>
-            < !-- Header -->
+            <!-- Header -->
               <div class="modal-header">
                 <div>
                   <h2 class="modal-title">NEW REQUEST</h2>
@@ -1590,13 +1586,13 @@
                 </div>
                 <div class="timer-badge"><span id="modal-countdown">30</span>s </div>
               </div>
-              < !-- Content -->
+              <!-- Content -->
                 <div class="modal-body">
-                  < !-- Fare (Center Stage) -->
+                  <!-- Fare (Center Stage) -->
                     <div class="fare-display">
                       <p class="fare-label">Estimated Earnings</p>
                       <div class="fare-amount">₹<span id="modal-fare">0</span></div>
-                      < !-- Meta Grid -->
+                      <!-- Meta Grid -->
                         <div class="stats-grid">
                           <div class="stat-box">
                             <p class="stat-label">Distance</p>
@@ -1608,7 +1604,7 @@
                           </div>
                         </div>
                     </div>
-                    < !-- Route Details -->
+                    <!-- Route Details -->
                       <div class="route-details">
                         <div class="route-row">
                           <div class="route-dot dot-green"></div>
@@ -1626,7 +1622,7 @@
                         </div>
                       </div>
                 </div>
-                < !-- Actions -->
+                <!-- Actions -->
                   <div class="modal-actions"><button onclick="rejectRide()" class="btn-decline">Decline </button><button
                       onclick="acceptRide()" class="btn-accept">ACCEPT RIDE </button></div>
         </div>
