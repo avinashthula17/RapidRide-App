@@ -667,6 +667,10 @@
       <button class="btn-action btn-cancel" onclick="cancelRide()">
         ✖ Cancel Ride
       </button>
+      <button class="btn-action" onclick="debugClearActiveRides()"
+        style="background: rgba(239, 68, 68, 0.1); border: 2px dashed #ef4444; color: #ef4444; margin-top: 10px;">
+        🧹 Cancel All (Debug)
+      </button>
     </div>
   </div>
 
@@ -1359,6 +1363,28 @@
         socket.disconnect();
       }
     });
+
+    // Debug active rides
+    window.debugClearActiveRides = async function () {
+      if (!confirm('DEBUG: Clear ALL active rides? This will cancel existing rides.')) return;
+
+      const btn = (window.event && window.event.target) || document.querySelector('button[onclick*="debugClearActiveRides"]');
+      if (btn) { btn.innerHTML = 'Clearing...'; btn.disabled = true; }
+
+      try {
+        const res = await apiFetch('/rides/clear-active', { method: 'POST' });
+        if (res.ok) {
+          alert('Cleared ' + res.data.count + ' rides.');
+          window.location.href = 'driver_home.html';
+        } else {
+          alert('Failed: ' + (res.data?.error || res.status));
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      } finally {
+        if (btn) { btn.innerHTML = '🧹 Cancel All (Debug)'; btn.disabled = false; }
+      }
+    };
   </script>
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
