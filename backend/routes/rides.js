@@ -387,8 +387,51 @@ router.get('/route', firebaseAuthMiddleware, async (req, res) => {
     console.log(`✅ Route calculated successfully`);
     res.json(data);
   } catch (error) {
-    console.error('❌ Routing Proxy Error:', error);
-    res.status(500).json({ message: 'Failed to calculate route', error: error.message });
+    console.error('❌ Routing Proxy Error:', error.message);
+    console.warn('⚠️ OSRM failed, falling back to straight-line calculation');
+
+    // Parse coordinates
+    const [pLon, pLat] = pickup.split(',').map(Number);
+    const [dLon, dLat] = drop.split(',').map(Number);
+
+    if (isNaN(pLon) || isNaN(pLat) || isNaN(dLon) || isNaN(dLat)) {
+       return res.status(400).json({ message: 'Invalid coordinates for fallback' });
+    }
+
+    // Calculate Haversine Distance
+    const R = 6371e3; // metres
+    const φ1 = pLat * Math.PI/180;
+    const φ2 = dLat * Math.PI/180;
+    const Δφ = (dLat-pLat) * Math.PI/180;
+    const Δλ = (dLon-pLon) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distanceMeters = R * c; // in meters
+
+    // Estimate duration (assume 30km/h average speed in city)
+    // 30 km/h = 8.33 m/s
+    const durationSeconds = distanceMeters / 8.33;
+
+    // Return in OSRM format
+    res.json({
+      code: 'Ok',
+      routes: [{
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [pLon, pLat],
+            [dLon, dLat]
+          ]
+        },
+        distance: distanceMeters,
+        duration: durationSeconds,
+        weight_name: 'fallback',
+        weight: durationSeconds
+      }]
+    });
   }
 });
 
