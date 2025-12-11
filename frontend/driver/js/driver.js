@@ -81,3 +81,95 @@ window.debugClearActiveRides = async function () {
     }
   }
 };
+
+// ==========================================
+// Ride Request Modal Logic
+// ==========================================
+let currentRequest = null;
+let requestTimer = null;
+
+window.showRequestModal = function (rideData) {
+  currentRequest = rideData;
+  const modal = document.getElementById('rideRequestModal');
+  if (!modal) return;
+
+  // Populate Fields
+  const riderName = rideData.riderName || 'Unknown';
+  document.getElementById('modal-rider-name').textContent = `Rider: ${riderName}`;
+  document.getElementById('modal-fare').textContent = Math.round(rideData.fare);
+
+  if (rideData.distance) {
+    document.getElementById('modal-distance').textContent = `${rideData.distance} km`;
+  }
+  if (rideData.duration) {
+    document.getElementById('modal-duration').textContent = `${rideData.duration} min`;
+  }
+
+  document.getElementById('modal-pickup').textContent = rideData.pickup.address;
+  document.getElementById('modal-drop').textContent = rideData.destination.address;
+
+  // Show Modal
+  modal.classList.remove('hidden');
+
+  // Play Sound
+  try {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGGS57OihUhQOTKXh8bVkHQU2jdXyy3krBSh+zPDcjjwKElyx6OyrWBQJR53e8r5uIQUrgc7y2Yk2CBhkuezooVIUDkyl4fG1ZB0FNo3V8st5KwUofsz');
+    audio.play().catch(e => console.log('Audio play failed', e));
+  } catch (e) { }
+
+  // Start Countdown
+  startCountdown();
+};
+
+function startCountdown() {
+  const el = document.getElementById('modal-countdown');
+  let timeLeft = 30;
+  if (el) el.textContent = timeLeft;
+
+  if (requestTimer) clearInterval(requestTimer);
+
+  requestTimer = setInterval(() => {
+    timeLeft--;
+    if (el) el.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      rejectRide();
+    }
+  }, 1000);
+}
+
+window.acceptRide = async function () {
+  if (!currentRequest) return;
+
+  if (requestTimer) clearInterval(requestTimer);
+
+  const btn = event.currentTarget; // Get the button clicked
+  const originalText = btn.innerText;
+  btn.innerText = 'ACCEPTING...';
+  btn.disabled = true;
+
+  try {
+    // Call DriverSocket directly if available
+    if (window.DriverSocket) {
+      await window.DriverSocket.acceptRide(currentRequest.rideId);
+    } else {
+      throw new Error('DriverSocket not initialized');
+    }
+
+    // Success - Hide Modal and Redirect
+    document.getElementById('rideRequestModal').classList.add('hidden');
+    window.location.href = `ride_active.html?rideId=${currentRequest.rideId}`;
+
+  } catch (error) {
+    console.error('Accept failed:', error);
+    alert('Failed to accept ride: ' + error.message);
+    btn.innerText = originalText;
+    btn.disabled = false;
+  }
+};
+
+window.rejectRide = function () {
+  if (requestTimer) clearInterval(requestTimer);
+  document.getElementById('rideRequestModal').classList.add('hidden');
+  currentRequest = null;
+  // interactions with socket rejection if needed
+};

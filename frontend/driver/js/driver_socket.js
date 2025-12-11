@@ -100,8 +100,9 @@
       showNotification(rideData);
 
       // Update UI
-      if (window.updateRideRequests) {
-        window.updateRideRequests(pendingRequests);
+      // Show Modal
+      if (window.showRequestModal) {
+        window.showRequestModal(rideData);
       }
     }
   }
@@ -114,8 +115,9 @@
     if (status === 'accepted' || status === 'cancelled') {
       pendingRequests = pendingRequests.filter(r => r.rideId !== rideId);
 
-      if (window.updateRideRequests) {
-        window.updateRideRequests(pendingRequests);
+      // Close Modal if it matches
+      if (window.rejectRide) {
+        window.rejectRide();
       }
     }
   }

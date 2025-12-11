@@ -173,19 +173,39 @@ router.post('/request', firebaseAuthMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Calculate fare and ETA using FastAPI
-    const [fareData, etaData] = await Promise.all([
-      fastapi.calculateFare({
-        origin: pickup,
-        destination: destination,
-        traffic_level: req.body.traffic_level || 1.0
-      }),
-      fastapi.predictETA({
-        origin: pickup,
-        destination: destination,
-        traffic_level: req.body.traffic_level || 1.0
-      })
-    ]);
+    // Check Redis cache for consistent pricing
+    const traffic = req.body.traffic_level || 1.0;
+    const cacheKey = redis.estimateKey(pickup, destination, traffic);
+    const cached = await redis.get(cacheKey);
+
+    let fareData, etaData;
+
+    if (cached) {
+      console.log('✅ Using cached estimate for request compatibility');
+      fareData = {
+        fare: cached.fare,
+        distance_km: cached.distance_km,
+        currency: cached.currency
+      };
+      etaData = {
+        eta_seconds: cached.eta_seconds,
+        confidence: cached.confidence
+      };
+    } else {
+      // Calculate fare and ETA using FastAPI
+      [fareData, etaData] = await Promise.all([
+        fastapi.calculateFare({
+          origin: pickup,
+          destination: destination,
+          traffic_level: traffic
+        }),
+        fastapi.predictETA({
+          origin: pickup,
+          destination: destination,
+          traffic_level: traffic
+        })
+      ]);
+    }
 
     // Create ride in MongoDB
     const ride = new Ride({

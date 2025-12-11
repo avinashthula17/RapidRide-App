@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -428,6 +429,7 @@
     }
   </style>
 </head>
+
 <body>
   <header class="admin-topbar">
     <div class="admin-brand">
@@ -445,7 +447,8 @@
 
     <!-- Stats Overview -->
     <div class="stats-grid">
-      <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('userManagementSection').scrollIntoView({ behavior: 'smooth' })">
+      <div class="stat-card" style="cursor: pointer;"
+        onclick="document.getElementById('userManagementSection').scrollIntoView({ behavior: 'smooth' })">
         <div class="stat-label">Total Users</div>
         <div class="stat-value" id="totalUsers">0</div>
       </div>
@@ -453,7 +456,8 @@
         <div class="stat-label">Total Rides</div>
         <div class="stat-value" id="totalRides">0</div>
       </div>
-      <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('supportTicketsSection').scrollIntoView({ behavior: 'smooth' })">
+      <div class="stat-card" style="cursor: pointer;"
+        onclick="document.getElementById('supportTicketsSection').scrollIntoView({ behavior: 'smooth' })">
         <div class="stat-label">Support Tickets</div>
         <div class="stat-value" id="supportTickets">0</div>
       </div>
@@ -465,7 +469,7 @@
         <span>👥</span>
         User Management
       </h2>
-      
+
       <div class="tabs">
         <button class="tab active" onclick="switchTab('riders')">Riders</button>
         <button class="tab" onclick="switchTab('drivers')">Drivers</button>
@@ -520,7 +524,7 @@
         <span>💬</span>
         Support Tickets
       </h2>
-      
+
       <div class="filter-buttons">
         <button class="filter-btn active" onclick="filterChats('all')">All</button>
         <button class="filter-btn" onclick="filterChats('active')">Active</button>
@@ -556,8 +560,10 @@
   <div class="chat-modal" id="chatModal">
     <div class="chat-modal-content">
       <div class="chat-header">
-        <button onclick="closeChatModal()" style="padding: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; margin-right: 0.75rem;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button onclick="closeChatModal()"
+          style="padding: 0.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; margin-right: 0.75rem;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
@@ -567,7 +573,8 @@
           <p id="chatTicketInfo">Ticket: #000000</p>
         </div>
         <div style="margin-left: auto; display: flex; gap: 0.5rem; align-items: center;">
-          <button id="adminEndChatBtn" onclick="showEndChatConfirmation()" style="padding: 0.5rem 1rem; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; color: #ef4444; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; margin-left: 0.5rem;">
+          <button id="adminEndChatBtn" onclick="showEndChatConfirmation()"
+            style="padding: 0.5rem 1rem; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; color: #ef4444; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; margin-left: 0.5rem;">
             End Chat
           </button>
           <div class="chat-close" onclick="closeChatModal()">
@@ -594,17 +601,21 @@
   </div>
 
   <!-- End Chat Confirmation Modal -->
-  <div id="endChatConfirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center;">
-    <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
+  <div id="endChatConfirmModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center;">
+    <div
+      style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);">
       <h3 style="margin: 0 0 1rem 0; font-size: 1.25rem; color: white;">End Chat Confirmation</h3>
       <p style="margin: 0 0 1.5rem 0; color: rgba(255, 255, 255, 0.8); line-height: 1.5;">
         Are you sure you want to end this chat? This action cannot be undone and no further messages can be sent.
       </p>
       <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-        <button onclick="hideEndChatConfirmation()" style="padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+        <button onclick="hideEndChatConfirmation()"
+          style="padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
           Cancel
         </button>
-        <button onclick="confirmEndChat()" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+        <button onclick="confirmEndChat()"
+          style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
           End Chat
         </button>
       </div>
@@ -615,14 +626,14 @@
   <script>
     // Override Auth.logout to track who's calling it
     const originalLogout = Auth.logout;
-    Auth.logout = function() {
+    Auth.logout = function () {
       console.error('⚠️ LOGOUT CALLED!');
       console.trace('Logout call stack:');
       return originalLogout.apply(this, arguments);
     };
 
     // Disable aggressive popstate logout for admin
-    window.addEventListener('popstate', function(e) {
+    window.addEventListener('popstate', function (e) {
       console.log('🛑 Blocked popstate event');
       e.stopImmediatePropagation();
       e.preventDefault();
@@ -630,7 +641,7 @@
     }, true);
 
     // Block all navigation that might trigger logout
-    window.addEventListener('beforeunload', function(e) {
+    window.addEventListener('beforeunload', function (e) {
       console.log('beforeunload triggered - preserving token');
       preserveToken();
     });
@@ -640,7 +651,7 @@
       const token = localStorage.getItem('token');
       if (token) {
         sessionStorage.setItem('token_backup', token);
-        document.cookie = `admin_token=${token}; path=/; max-age=${30*24*60*60}`; // 30 days
+        document.cookie = `admin_token=${token}; path=/; max-age=${30 * 24 * 60 * 60}`; // 30 days
         console.log('✅ Token preserved');
       }
     }
@@ -648,7 +659,7 @@
     function restoreToken() {
       let token = localStorage.getItem('token');
       console.log('Checking token - localStorage:', !!token);
-      
+
       if (!token) {
         // Try session storage
         token = sessionStorage.getItem('token_backup');
@@ -675,7 +686,7 @@
     }
 
     // Monitor localStorage changes
-    window.addEventListener('storage', function(e) {
+    window.addEventListener('storage', function (e) {
       if (e.key === 'token') {
         console.error('⚠️ localStorage "token" changed!', 'Old:', e.oldValue, 'New:', e.newValue);
         if (!e.newValue) {
@@ -689,17 +700,17 @@
     window.addEventListener('load', async () => {
       try {
         console.log('Checking admin authentication...');
-        
+
         // Restore token if missing
         const token = restoreToken();
         console.log('Token exists:', !!token);
-        
+
         if (!token) {
           console.error('No token found anywhere, redirecting to signin');
           window.location.href = '../common/signin.html';
           return;
         }
-        
+
         let user;
         try {
           await Auth.populateFromServer();
@@ -710,7 +721,7 @@
           // Don't redirect on API failure - token still exists
           user = { role: 'admin' }; // Temporary fallback
         }
-        
+
         if (!user) {
           console.error('No user found, but token exists - trying again in 2 seconds...');
           // Don't immediately redirect - give it another chance
@@ -728,7 +739,7 @@
 
         console.log('✅ Admin authenticated successfully');
         preserveToken(); // Backup token
-        
+
         // Load dashboard data
         try {
           await loadDashboardData();
@@ -782,10 +793,10 @@
     async function loadDashboardData() {
       try {
         const token = localStorage.getItem('token');
-        
+
         // Fetch users from backend
-        const response = await fetch(\${API_CONFIG.BASE_URL}/auth/admin/users', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const response = await fetch(`${API_CONFIG.BASE_URL}/auth/admin/users', {
+          headers: { 'Authorization': `Bearer ${ token }` }
         });
         
         const data = await response.json();
@@ -802,50 +813,50 @@
           const ridersBody = document.getElementById('ridersTableBody');
           if (data.riders.length > 0) {
             ridersBody.innerHTML = data.riders.map(rider => `
-              <tr>
+        < tr >
                 <td>${rider.name}</td>
                 <td>${rider.email}</td>
                 <td>${rider.phone || 'N/A'}</td>
                 <td>0</td>
                 <td><span class="badge ${rider.emailVerified ? 'success' : 'muted'}">${rider.emailVerified ? 'Active' : 'Pending'}</span></td>
-              </tr>
-            `).join('');
+              </tr >
+          `).join('');
           } else {
             ridersBody.innerHTML = `
-              <tr>
-                <td colspan="5">
-                  <div class="empty-state">
-                    <p>No riders registered yet</p>
-                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Riders will appear here once they register</p>
-                  </div>
-                </td>
-              </tr>
-            `;
+          < tr >
+          <td colspan="5">
+            <div class="empty-state">
+              <p>No riders registered yet</p>
+              <p style="font-size: 0.9rem; margin-top: 0.5rem;">Riders will appear here once they register</p>
+            </div>
+          </td>
+              </tr >
+          `;
           }
 
           // Load drivers
           const driversBody = document.getElementById('driversTableBody');
           if (data.captains.length > 0) {
             driversBody.innerHTML = data.captains.map(driver => `
-              <tr>
+          < tr >
                 <td>${driver.name}</td>
                 <td>${driver.email}</td>
                 <td>${driver.phone || 'N/A'}</td>
                 <td>N/A</td>
                 <td><span class="badge ${driver.emailVerified ? 'success' : 'muted'}">${driver.emailVerified ? 'Active' : 'Pending'}</span></td>
-              </tr>
-            `).join('');
+              </tr >
+          `).join('');
           } else {
             driversBody.innerHTML = `
-              <tr>
-                <td colspan="5">
-                  <div class="empty-state">
-                    <p>No drivers registered yet</p>
-                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Drivers will appear here once they register</p>
-                  </div>
-                </td>
-              </tr>
-            `;
+          < tr >
+          <td colspan="5">
+            <div class="empty-state">
+              <p>No drivers registered yet</p>
+              <p style="font-size: 0.9rem; margin-top: 0.5rem;">Drivers will appear here once they register</p>
+            </div>
+          </td>
+              </tr >
+          `;
           }
         }
       } catch (error) {
@@ -862,54 +873,54 @@
         console.log('Loading support tickets...');
         console.log('Token:', token ? 'Present' : 'Missing');
         
-        const response = await fetch(\${API_CONFIG.BASE_URL}/support/admin/chats', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        
-        console.log('Response status:', response.status);
-        const data = await response.json();
-        console.log('Response data:', data);
-        
-        if (data.success) {
-          allChats = data.chats;
-          console.log('Loaded chats:', allChats.length);
-          document.getElementById('supportTickets').textContent = allChats.filter(c => c.status === 'active').length;
-          renderChats();
-        } else {
-          console.error('Failed to load chats:', data.message);
-          document.getElementById('ticketsTableBody').innerHTML = `
+        const response = await fetch(`${ API_CONFIG.BASE_URL } /support/admin / chats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (data.success) {
+        allChats = data.chats;
+        console.log('Loaded chats:', allChats.length);
+        document.getElementById('supportTickets').textContent = allChats.filter(c => c.status === 'active').length;
+        renderChats();
+      } else {
+        console.error('Failed to load chats:', data.message);
+        document.getElementById('ticketsTableBody').innerHTML = `
             <tr>
               <td colspan="7">
                 <div class="empty-state">${data.message || 'Failed to load tickets'}</div>
               </td>
             </tr>
           `;
-        }
-      } catch (error) {
-        console.error('Failed to load support tickets:', error);
-        document.getElementById('ticketsTableBody').innerHTML = `
+      }
+    } catch (error) {
+      console.error('Failed to load support tickets:', error);
+      document.getElementById('ticketsTableBody').innerHTML = `
           <tr>
             <td colspan="7">
               <div class="empty-state">Failed to load tickets. Please refresh.</div>
             </td>
           </tr>
         `;
-      }
+    }
     }
 
     function filterChats(filter) {
       currentFilter = filter;
-      
+
       // Update filter buttons
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
-      
+
       renderChats();
     }
 
     function renderChats() {
       let filteredChats = allChats;
-      
+
       if (currentFilter === 'active' || currentFilter === 'ended') {
         filteredChats = allChats.filter(c => c.status === currentFilter);
       } else if (currentFilter === 'captain' || currentFilter === 'rider') {
@@ -917,7 +928,7 @@
       }
 
       const tbody = document.getElementById('ticketsTableBody');
-      
+
       if (filteredChats.length === 0) {
         tbody.innerHTML = `
           <tr>
@@ -952,10 +963,10 @@
       currentChatId = chatId;
       const modal = document.getElementById('chatModal');
       modal.classList.add('active');
-      
+
       await loadChatMessages(chatId);
       startMessagePolling();
-      
+
       setTimeout(() => {
         document.getElementById('chatInput').focus();
       }, 100);
@@ -964,12 +975,12 @@
     function closeChatModal() {
       const modal = document.getElementById('chatModal');
       modal.classList.remove('active');
-      
+
       if (messagePollingInterval) {
         clearInterval(messagePollingInterval);
         messagePollingInterval = null;
       }
-      
+
       currentChatId = null;
     }
 
@@ -980,23 +991,23 @@
         const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${chatId}?_t=${Date.now()}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
+
         console.log('Message response status:', response.status);
         const data = await response.json();
         console.log('Message response data:', data);
-        
+
         if (data.success) {
           const chat = data.chat;
           console.log('Chat messages:', chat.messages);
-          
+
           // Update header
           document.getElementById('chatUserName').textContent = `${chat.userName} (${chat.userType})`;
           document.getElementById('chatTicketInfo').textContent = `Ticket: ${chat.ticketNumber} • ${chat.status}`;
-          
+
           // Hide input container and end button if chat is ended
           const inputContainer = document.querySelector('.chat-modal .chat-input-container');
           const endBtn = document.getElementById('adminEndChatBtn');
-          
+
           if (chat.status === 'ended') {
             inputContainer.style.display = 'none';
             if (endBtn) endBtn.style.display = 'none';
@@ -1004,47 +1015,47 @@
             inputContainer.style.display = 'flex';
             if (endBtn) endBtn.style.display = 'block';
           }
-          
+
           // Render messages
           const messagesContainer = document.getElementById('chatMessages');
           messagesContainer.innerHTML = '';
-          
+
           if (chat.messages.length === 0) {
             messagesContainer.innerHTML = '<div class="empty-state">No messages yet</div>';
             return;
           }
-          
+
           chat.messages.forEach(msg => {
             const isAdmin = msg.senderType === 'admin';
             const messageEl = document.createElement('div');
             messageEl.className = `chat-message ${isAdmin ? 'admin' : ''}`;
-            
+
             const avatar = document.createElement('div');
             avatar.className = 'chat-avatar';
             avatar.textContent = isAdmin ? 'A' : (chat.userType === 'captain' ? 'D' : 'R');
-            
+
             const content = document.createElement('div');
             content.style.flex = '1';
-            
+
             const bubble = document.createElement('div');
             bubble.className = 'chat-bubble';
             bubble.textContent = msg.text;
-            
+
             const time = document.createElement('div');
             time.className = 'chat-time';
-            time.textContent = new Date(msg.timestamp).toLocaleTimeString('en-US', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
+            time.textContent = new Date(msg.timestamp).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit'
             });
-            
+
             content.appendChild(bubble);
             content.appendChild(time);
             messageEl.appendChild(avatar);
             messageEl.appendChild(content);
-            
+
             messagesContainer.appendChild(messageEl);
           });
-          
+
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
       } catch (error) {
@@ -1066,9 +1077,9 @@
     async function sendAdminMessage() {
       const input = document.getElementById('chatInput');
       const message = input.value.trim();
-      
+
       if (!message || !currentChatId) return;
-      
+
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${currentChatId}/messages`, {
@@ -1079,7 +1090,7 @@
           },
           body: JSON.stringify({ message })
         });
-        
+
         const data = await response.json();
         if (data.success) {
           input.value = '';
@@ -1096,12 +1107,12 @@
     // Auto-resize textarea
     const chatInput = document.getElementById('chatInput');
     if (chatInput) {
-      chatInput.addEventListener('input', function() {
+      chatInput.addEventListener('input', function () {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
       });
 
-      chatInput.addEventListener('keypress', function(e) {
+      chatInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
           sendAdminMessage();
@@ -1120,7 +1131,7 @@
 
     async function confirmEndChat() {
       if (!currentChatId) return;
-      
+
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${currentChatId}/end`, {
@@ -1129,7 +1140,7 @@
             'Authorization': `Bearer ${token}`
           }
         });
-        
+
         const data = await response.json();
         if (data.success) {
           hideEndChatConfirmation();
@@ -1145,7 +1156,7 @@
     }
 
     // Close modal on Escape
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         closeChatModal();
       }
@@ -1162,8 +1173,8 @@
     async function fetchTotalRides() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(\${API_CONFIG.BASE_URL}/rides/admin/count', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const response = await fetch(`${API_CONFIG.BASE_URL}/rides/admin/count', {
+          headers: { 'Authorization': `Bearer ${ token }` }
         });
 
         if (response.ok) {
@@ -1180,4 +1191,5 @@
     }
   </script>
 </body>
+
 </html>

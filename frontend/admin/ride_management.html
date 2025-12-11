@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -256,12 +257,13 @@
     }
   </style>
 </head>
+
 <body>
   <div class="header">
     <h1>🚗 Ride Management</h1>
     <button class="back-btn" onclick="window.location.href='admin_dashboard.html'">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
+        <path d="M19 12H5M12 19l-7-7 7-7" />
       </svg>
       Back to Dashboard
     </button>
@@ -347,10 +349,10 @@
     async function loadRides() {
       try {
         const token = localStorage.getItem('token');
-        
+
         // Fetch all rides from backend
-        const response = await fetch(\${API_CONFIG.BASE_URL}/rides/admin/all', {
-          headers: { 'Authorization': `Bearer ${token}` }
+        const response = await fetch(`${API_CONFIG.BASE_URL}/rides/admin/all', {
+          headers: { 'Authorization': `Bearer ${ token }` }
         });
         
         if (!response.ok) {
@@ -407,28 +409,28 @@
       
       if (filteredRides.length === 0) {
         tbody.innerHTML = `
-          <tr>
-            <td colspan="6">
-              <div class="empty-state">
-                <p>No ${currentFilter === 'all' ? '' : currentFilter} rides found</p>
-                <p style="font-size: 0.9rem; margin-top: 0.5rem;">Rides will appear here once users start booking</p>
-              </div>
-            </td>
-          </tr>
-        `;
+        < tr >
+        <td colspan="6">
+          <div class="empty-state">
+            <p>No ${currentFilter === 'all' ? '' : currentFilter} rides found</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Rides will appear here once users start booking</p>
+          </div>
+        </td>
+          </tr >
+          `;
         return;
       }
 
       tbody.innerHTML = filteredRides.map(ride => `
-        <tr onclick="openRideDetails('${ride._id}')" style="cursor: pointer;">
+          < tr onclick = "openRideDetails('${ride._id}')" style = "cursor: pointer;" >
           <td><strong>#${ride._id.slice(-6)}</strong></td>
           <td>${ride.driver ? ride.driver.name : 'Not Assigned'}</td>
           <td>${ride.rider ? ride.rider.name : 'Unknown'}</td>
           <td>${ride.distance ? (ride.distance).toFixed(1) : 'N/A'} km</td>
           <td><span class="badge ${getStatusBadge(ride.status)}">${ride.status}</span></td>
           <td>${new Date(ride.createdAt).toLocaleString()}</td>
-        </tr>
-      `).join('');
+        </tr >
+          `).join('');
     }
 
     function getStatusBadge(status) {
@@ -445,10 +447,10 @@
 
       const modalBody = document.getElementById('modalBody');
       modalBody.innerHTML = `
-        <div class="detail-group">
+          < div class="detail-group" >
           <div class="detail-label">Ride ID</div>
           <div class="detail-value">#${ride._id}</div>
-        </div>
+        </div >
 
         <div class="location-card">
           <h4>📍 Pickup Location</h4>
@@ -501,13 +503,15 @@
           ` : ''}
         </div>
         
-        ${ride.rating ? `
+        ${
+          ride.rating ? `
         <div class="detail-group" style="margin-top: 1rem;">
           <div class="detail-label">Rating</div>
           <div class="detail-value">⭐ ${ride.rating}/5</div>
           ${ride.feedback ? `<p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">"${ride.feedback}"</p>` : ''}
         </div>
-        ` : ''}
+        ` : ''
+        }
       `;
 
       document.getElementById('rideModal').classList.add('active');
@@ -532,4 +536,5 @@
     });
   </script>
 </body>
+
 </html>
