@@ -1,5 +1,5 @@
 // Driver Socket.IO client for real-time ride requests
-(function() {
+(function () {
   let socket = null;
   let isOnline = false;
   let currentUserId = null;
@@ -7,12 +7,12 @@
   let pendingRequests = [];
   let lastActivityTime = Date.now();
   let inactivityCheckInterval = null;
-  
+
   const INACTIVITY_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
   const STORAGE_KEY_ONLINE_STATE = 'driver_online_state';
   const STORAGE_KEY_LAST_ACTIVITY = 'driver_last_activity';
 
-  const API_BASE = 'http://localhost:3000';
+  const API_BASE = window.API_CONFIG ? API_CONFIG.WS_URL : 'http://localhost:3000';
 
   // Initialize socket connection
   async function initSocket() {
@@ -39,10 +39,10 @@
 
     socket.on('connect', () => {
       console.log('✅ Driver socket connected:', socket.id);
-      
+
       // Try to restore previous online state from localStorage
       const wasRestored = restoreOnlineState();
-      
+
       // If not restored but was online before disconnect, go online again
       if (!wasRestored && isOnline && currentUserId && currentVehicleType) {
         goOnline(currentUserId, currentVehicleType);
@@ -85,20 +85,20 @@
       console.log('⚠️ Received request while offline - ignoring');
       return;
     }
-    
+
     // Update activity on receiving request
     updateActivity();
-    
+
     // Add to pending requests if not already there
     if (!pendingRequests.find(r => r.rideId === rideData.rideId)) {
       pendingRequests.push(rideData);
-      
+
       // Play notification sound (optional)
       playNotificationSound();
-      
+
       // Show browser notification if permitted
       showNotification(rideData);
-      
+
       // Update UI
       if (window.updateRideRequests) {
         window.updateRideRequests(pendingRequests);
@@ -109,11 +109,11 @@
   // Handle ride status update
   function handleRideStatusUpdate(data) {
     const { rideId, status } = data;
-    
+
     // Remove from pending if accepted by another driver or cancelled
     if (status === 'accepted' || status === 'cancelled') {
       pendingRequests = pendingRequests.filter(r => r.rideId !== rideId);
-      
+
       if (window.updateRideRequests) {
         window.updateRideRequests(pendingRequests);
       }
@@ -123,12 +123,12 @@
   // Go online
   function goOnline(userId, vehicleType, location = null) {
     if (!socket) initSocket();
-    
+
     currentUserId = userId;
     currentVehicleType = vehicleType;
     isOnline = true;
     lastActivityTime = Date.now();
-    
+
     // Save online state to localStorage for persistence
     localStorage.setItem(STORAGE_KEY_ONLINE_STATE, JSON.stringify({
       userId,
@@ -136,16 +136,16 @@
       timestamp: Date.now()
     }));
     localStorage.setItem(STORAGE_KEY_LAST_ACTIVITY, Date.now().toString());
-    
+
     socket.emit('driver:online', {
       userId,
       vehicleType,
       location
     });
-    
+
     // Start inactivity monitoring
     startInactivityMonitoring();
-    
+
     console.log(`✅ Driver ${userId} went ONLINE with ${vehicleType} - ready to receive ride requests`);
     console.log(`⏰ Will auto-offline after 1 hour of inactivity`);
   }
@@ -153,33 +153,33 @@
   // Go offline
   function goOffline(userId) {
     if (!socket) return;
-    
+
     isOnline = false;
     currentUserId = null;
     currentVehicleType = null;
-    
+
     // Clear persistent state
     localStorage.removeItem(STORAGE_KEY_ONLINE_STATE);
     localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
-    
+
     // Stop inactivity monitoring
     stopInactivityMonitoring();
-    
+
     socket.emit('driver:offline', { userId });
-    
+
     // Clear pending requests immediately
     pendingRequests = [];
     if (window.updateRideRequests) {
       window.updateRideRequests([]);
     }
-    
+
     console.log(`❌ Driver ${userId} went offline - will not receive new requests`);
   }
 
   // Update driver location
   function updateLocation(userId, location) {
     if (!socket || !isOnline) return;
-    
+
     socket.emit('driver:location', {
       userId,
       location
@@ -205,11 +205,11 @@
       if (response.ok) {
         // Remove from pending requests
         pendingRequests = pendingRequests.filter(r => r.rideId !== rideId);
-        
+
         if (window.updateRideRequests) {
           window.updateRideRequests(pendingRequests);
         }
-        
+
         console.log('✅ Ride accepted:', data);
         return data;
       } else {
@@ -224,11 +224,11 @@
   // Reject ride request
   function rejectRide(rideId) {
     pendingRequests = pendingRequests.filter(r => r.rideId !== rideId);
-    
+
     if (window.updateRideRequests) {
       window.updateRideRequests(pendingRequests);
     }
-    
+
     console.log('❌ Ride rejected:', rideId);
   }
 
@@ -273,17 +273,17 @@
   function startInactivityMonitoring() {
     // Clear any existing interval
     stopInactivityMonitoring();
-    
+
     // Check every minute for inactivity
     inactivityCheckInterval = setInterval(() => {
       const now = Date.now();
       const timeSinceActivity = now - lastActivityTime;
-      
+
       if (timeSinceActivity >= INACTIVITY_TIMEOUT) {
         console.log('⏰ 1 hour of inactivity detected - going offline automatically');
         if (currentUserId) {
           goOffline(currentUserId);
-          
+
           // Notify user
           if (window.updateDriverStatus) {
             window.updateDriverStatus('offline', 'Auto-offline due to 1 hour inactivity');
@@ -314,11 +314,11 @@
     try {
       const savedState = localStorage.getItem(STORAGE_KEY_ONLINE_STATE);
       const lastActivity = localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY);
-      
+
       if (savedState && lastActivity) {
         const state = JSON.parse(savedState);
         const timeSinceActivity = Date.now() - parseInt(lastActivity);
-        
+
         // Only restore if less than 1 hour has passed
         if (timeSinceActivity < INACTIVITY_TIMEOUT) {
           console.log('🔄 Restoring previous online state...');
@@ -326,12 +326,12 @@
           currentVehicleType = state.vehicleType;
           isOnline = true;
           lastActivityTime = parseInt(lastActivity);
-          
+
           // Reconnect
           if (socket && socket.connected) {
             goOnline(state.userId, state.vehicleType);
           }
-          
+
           return true;
         } else {
           console.log('⏰ Previous session expired (>1 hour) - starting fresh');

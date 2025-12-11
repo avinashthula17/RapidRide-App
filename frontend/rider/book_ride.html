@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -70,6 +71,7 @@
       .booking-grid {
         grid-template-columns: 1fr;
       }
+
       #map {
         height: 400px !important;
       }
@@ -297,11 +299,11 @@
       border-radius: 50%;
     }
 
-    input:checked + .toggle-slider {
+    input:checked+.toggle-slider {
       background-color: var(--primary);
     }
 
-    input:checked + .toggle-slider:before {
+    input:checked+.toggle-slider:before {
       transform: translateX(24px);
     }
 
@@ -496,7 +498,9 @@
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .error-message {
@@ -515,6 +519,7 @@
   </style>
   <script src="../../../../../../../common/js/config.js"></script>
 </head>
+
 <body>
   <!-- Topbar -->
   <div class="topbar">
@@ -607,7 +612,8 @@
       <div class="map-container">
         <div id="map"></div>
         <button class="locate-btn" onclick="locateMe()" title="Show my location">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <circle cx="12" cy="12" r="3"></circle>
             <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -673,7 +679,7 @@
     // Initialize on load
     window.addEventListener('load', async () => {
       console.log('🚀 Initializing Book Ride page...');
-      
+
       initMap();
       await getCurrentLocation();
       setupEventListeners();
@@ -687,7 +693,7 @@
         getCurrentLocation();
         return;
       }
-      
+
       // Center map on current location with smooth animation
       map.setView([currentLocation.lat, currentLocation.lon], 15, {
         animate: true,
@@ -702,7 +708,7 @@
         getCurrentLocation();
         return;
       }
-      
+
       // Center map on current location with smooth animation
       map.setView([currentLocation.lat, currentLocation.lon], 15, {
         animate: true,
@@ -735,14 +741,14 @@
     // Set map selection mode
     function setMapMode(mode) {
       mapSelectionMode = mode;
-      
+
       // Update button states
       document.getElementById('selectPickupBtn').classList.toggle('active', mode === 'pickup');
       document.getElementById('selectDropBtn').classList.toggle('active', mode === 'drop');
-      
+
       // Change map cursor
       map.getContainer().style.cursor = mode ? 'crosshair' : '';
-      
+
       console.log(`📍 Map mode: ${mode || 'none'}`);
     }
 
@@ -766,7 +772,7 @@
 
         const pickupInput = document.getElementById('pickup');
         const dropInput = document.getElementById('drop');
-        
+
         if (mapSelectionMode === 'pickup') {
           // Set as pickup location
           handlePickupSelect({ lat, lon, display_name: address });
@@ -776,7 +782,7 @@
           handleDropSelect({ lat, lon, display_name: address });
           dropInput.value = address;
         }
-        
+
         // Clear selection mode after setting location
         setMapMode(null);
       } catch (error) {
@@ -787,15 +793,15 @@
     // Handle pickup location selection
     function handlePickupSelect(location) {
       console.log('📍 Pickup location selected:', location);
-      
+
       currentLocation = {
         lat: location.lat,
         lon: location.lon,
         name: location.display_name || `${location.lat.toFixed(4)}, ${location.lon.toFixed(4)}`
       };
-      
+
       if (pickupMarker) map.removeLayer(pickupMarker);
-      
+
       pickupMarker = L.marker([location.lat, location.lon], {
         icon: L.divIcon({
           className: 'custom-marker',
@@ -803,23 +809,23 @@
           iconSize: [100, 40]
         })
       }).addTo(map);
-      
+
       if (dropMarker) {
         const bounds = L.latLngBounds([pickupMarker.getLatLng(), dropMarker.getLatLng()]);
         map.fitBounds(bounds, { padding: [50, 50] });
       } else {
         map.setView([location.lat, location.lon], 14);
       }
-      
+
       calculateRoute();
     }
 
     // Handle drop location selection
     function handleDropSelect(location) {
       console.log('📍 Drop location selected:', location);
-      
+
       if (dropMarker) map.removeLayer(dropMarker);
-      
+
       dropMarker = L.marker([location.lat, location.lon], {
         icon: L.divIcon({
           className: 'custom-marker',
@@ -857,7 +863,7 @@
           { headers: { 'User-Agent': 'RapidRide/1.0' } }
         );
         const data = await response.json();
-        
+
         currentLocation = {
           lat,
           lon,
@@ -865,7 +871,7 @@
         };
 
         pickupInput.value = currentLocation.name;
-        
+
         // Add marker
         if (pickupMarker) map.removeLayer(pickupMarker);
         pickupMarker = L.marker([lat, lon], {
@@ -875,9 +881,9 @@
             iconSize: [100, 40]
           })
         }).addTo(map);
-        
+
         map.setView([lat, lon], 14);
-        
+
         // Calculate route if drop location is set
         if (dropMarker) {
           calculateRoute();
@@ -938,7 +944,7 @@
     function showVehicles(distance) {
       const section = document.getElementById('vehicleSection');
       const grid = document.getElementById('vehicleGrid');
-      
+
       grid.innerHTML = VEHICLES.map(v => {
         const price = Math.round(v.baseRate + (distance * v.perKm));
         return `
@@ -961,32 +967,32 @@
     // Select vehicle
     function selectVehicle(type, price) {
       selectedVehicle = { type, price };
-      
+
       document.querySelectorAll('.vehicle-card').forEach(card => {
         card.classList.remove('selected');
       });
       event.currentTarget.classList.add('selected');
-      
+
       document.getElementById('bookRideBtn').disabled = false;
     }
 
     // Setup event listeners
     function setupEventListeners() {
       document.getElementById('useCurrentLocation').addEventListener('click', getCurrentLocation);
-      
+
       // Select all text on focus for pickup and drop inputs
-      document.getElementById('pickup').addEventListener('focus', function() {
+      document.getElementById('pickup').addEventListener('focus', function () {
         this.select();
       });
-      
-      document.getElementById('drop').addEventListener('focus', function() {
+
+      document.getElementById('drop').addEventListener('focus', function () {
         this.select();
       });
-      
+
       document.getElementById('scheduleRide').addEventListener('change', (e) => {
         const isScheduled = e.target.checked;
         document.getElementById('scheduleTimeRow').style.display = isScheduled ? 'block' : 'none';
-        
+
         // Update button text
         const bookBtn = document.getElementById('bookRideBtn');
         bookBtn.textContent = isScheduled ? 'Schedule Ride' : 'Book Ride';
@@ -1034,14 +1040,14 @@
         });
 
         console.log('Booking response:', response.data);
-        
+
         if (response.ok) {
           // Store the ride ID in sessionStorage for immediate access
           const rideIdToStore = response.data.rideId || response.data.ride?.id || response.data.ride?._id;
           if (rideIdToStore) {
             sessionStorage.setItem('currentRideId', rideIdToStore);
           }
-          
+
           // Redirect without alert
           window.location.href = 'ride_status.html?rideId=' + rideIdToStore;
         } else {
@@ -1066,8 +1072,8 @@
       } catch (err) {
         console.error('Failed to get Firebase token for socket:', err);
       }
-      
-      socket = io('http://localhost:3000', {
+
+      socket = io(API_CONFIG.WS_URL, {
         auth: { token }
       });
       socket.on('connect', () => console.log('✅ Socket connected'));
@@ -1105,4 +1111,5 @@
     }
   </script>
 </body>
+
 </html>
