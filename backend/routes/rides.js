@@ -8,7 +8,7 @@ const fastapi = require('../services/fastapi');
 const redis = require('../services/redis');
 const { admin, firebaseInitialized } = require('../config/firebase');
 const { firebaseAuthMiddleware } = require('../middleware/auth');
-const { findUserByFirebaseAuth } = require('../helpers/user');
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
