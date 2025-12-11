@@ -262,9 +262,9 @@ const socketAuthMiddleware = async (socket, next) => {
 
       console.log(`🔍 Socket token decoded - UID: ${decodedToken.uid}, Email: ${decodedToken.email}`);
 
-      // Get user role from database - use firebaseUid as primary lookup
-      const User = require('./models/user');
-      const user = await User.findOne({ firebaseUid: decodedToken.uid });
+      // Get user role from database - use standardized lookup
+      const { findUserByFirebaseAuth } = require('./helpers/user');
+      const user = await findUserByFirebaseAuth({ uid: decodedToken.uid });
 
       console.log(`👤 Found user in DB: ${user?.name}, Role: ${user?.role}, UID: ${user?.firebaseUid}`);
 

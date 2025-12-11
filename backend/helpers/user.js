@@ -11,16 +11,27 @@ async function findUserByFirebaseAuth(firebaseUser) {
         return null;
     }
 
-    let query = { firebaseUid: firebaseUser.uid };
+    // 1. Try finding by Firebase UID (Gold Standard)
+    let user = await User.findOne({ firebaseUid: firebaseUser.uid });
+    if (user) return user;
+
+    // 2. If not found, fallback to Email (Legacy/Migration support)
+    // Only if email is provided and confirmed
     if (firebaseUser.email) {
-        query = {
-            $or: [
-                { firebaseUid: firebaseUser.uid },
-                { email: firebaseUser.email }
-            ]
-        };
+        // Find user by email who DOES NOT have a conflicting UID
+        user = await User.findOne({ email: firebaseUser.email });
+
+        // Safety check: If we found a user by email, strictly ensure we aren't 
+        // taking over an account that already has a DIFFERENT firebaseUid
+        if (user && user.firebaseUid && user.firebaseUid !== firebaseUser.uid) {
+            console.warn(`[Identity] Prevented match: Email ${firebaseUser.email} matches user ${user._id}, but UID differs (${user.firebaseUid} vs ${firebaseUser.uid})`);
+            return null; // Treat as no match - force new account creation or handling
+        }
+
+        return user;
     }
-    return await User.findOne(query);
+
+    return null;
 }
 
 module.exports = {

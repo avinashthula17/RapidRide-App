@@ -98,31 +98,27 @@ router.post('/firebase-email', async (req, res) => {
 
     let user;
     try {
-      // Try MongoDB first - check by firebaseUid first, then by email
-      user = await User.findOne({ firebaseUid: uid });
+      // Use standardized user lookup
+      user = await findUserByFirebaseAuth({ uid, email: verifiedEmail });
 
       if (!user) {
-        // Check if user exists by email (for admin accounts created via terminal)
-        user = await User.findOne({ email: verifiedEmail });
-
-        if (user) {
-          // Link Firebase UID to existing user
-          user.firebaseUid = uid;
-          user.emailVerified = true;
-          await user.save();
-          console.log('✅ Linked Firebase UID to existing user:', verifiedEmail);
-        } else {
-          // Create new user with email
-          user = new User({
-            email: verifiedEmail,
-            firebaseUid: uid,
-            emailVerified: true,
-            phoneVerified: false
-          });
-          await user.save();
-        }
+        // Create new user if not found by UID or Email
+        user = new User({
+          email: verifiedEmail,
+          firebaseUid: uid || bodyUid,
+          emailVerified: true,
+          phoneVerified: false
+        });
+        await user.save();
+        console.log('✅ Created new user from Firebase Email Auth:', user.email);
       } else {
-        // Update existing user
+        // Link UID if missing (migrated from email match)
+        if (!user.firebaseUid) {
+          user.firebaseUid = uid;
+          console.log('✅ Linked Firebase UID to existing email user:', verifiedEmail);
+        }
+
+        // Update email if changed and verified
         if (verifiedEmail && user.email !== verifiedEmail) {
           user.email = verifiedEmail;
         }
@@ -311,8 +307,8 @@ router.post('/complete-profile', firebaseAuthMiddleware, async (req, res) => {
 
     console.log('Complete profile request for UID:', uid);
 
-    // Find user in MongoDB
-    let user = await User.findOne({ firebaseUid: uid });
+    // Find user by Firebase UID or Email (Standardized)
+    let user = await findUserByFirebaseAuth({ uid });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found. Please sign in again.' });
@@ -360,8 +356,8 @@ router.get('/me', firebaseAuthMiddleware, async (req, res) => {
   try {
     const uid = req.firebaseUser.uid;
 
-    // Find user in MongoDB
-    const user = await User.findOne({ firebaseUid: uid });
+    // Find user in MongoDB (Standardized)
+    const user = await findUserByFirebaseAuth({ uid });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -400,8 +396,8 @@ router.get('/stats', firebaseAuthMiddleware, async (req, res) => {
   try {
     const uid = req.firebaseUser.uid;
 
-    // Get user from MongoDB
-    const user = await User.findOne({ firebaseUid: uid });
+    // Get user from MongoDB (Standardized)
+    const user = await findUserByFirebaseAuth({ uid });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -432,7 +428,7 @@ router.get('/stats', firebaseAuthMiddleware, async (req, res) => {
 router.get('/stats/today', firebaseAuthMiddleware, async (req, res) => {
   try {
     const Ride = require('../models/ride');
-    const user = await User.findOne({ firebaseUid: req.firebaseUser.uid });
+    const user = await findUserByFirebaseAuth({ uid: req.firebaseUser.uid });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -481,7 +477,7 @@ router.get('/stats/today', firebaseAuthMiddleware, async (req, res) => {
 // Get saved places
 router.get('/places', firebaseAuthMiddleware, async (req, res) => {
   try {
-    const user = await User.findOne({ firebaseUid: req.firebaseUser.uid });
+    const user = await findUserByFirebaseAuth({ uid: req.firebaseUser.uid });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -505,7 +501,7 @@ router.post('/places', firebaseAuthMiddleware, async (req, res) => {
     }
 
     console.log('🔍 Looking for user:', req.firebaseUser.uid);
-    const user = await User.findOne({ firebaseUid: req.firebaseUser.uid });
+    const user = await findUserByFirebaseAuth({ uid: req.firebaseUser.uid });
     if (!user) {
       console.log('❌ User not found');
       return res.status(404).json({ error: 'User not found' });
@@ -549,7 +545,7 @@ router.delete('/places', firebaseAuthMiddleware, async (req, res) => {
   try {
     const { lat, lon, index } = req.body;
 
-    const user = await User.findOne({ firebaseUid: req.firebaseUser.uid });
+    const user = await findUserByFirebaseAuth({ uid: req.firebaseUser.uid });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -654,7 +650,7 @@ router.put('/profile', firebaseAuthMiddleware, async (req, res) => {
 router.get('/admin/users', firebaseAuthMiddleware, async (req, res) => {
   try {
     // Check if user is admin
-    const adminUser = await User.findOne({ firebaseUid: req.firebaseUser.uid });
+    const adminUser = await findUserByFirebaseAuth({ uid: req.firebaseUser.uid });
     if (!adminUser || adminUser.role !== 'admin') {
       return res.status(403).json({ error: 'Access denied. Admin only.' });
     }
