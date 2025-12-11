@@ -906,7 +906,15 @@
 
       try {
         // Use Backend Proxy for routing (Avoids CORS)
-        const token = localStorage.getItem('token');
+        // Get fresh token from Firebase SDK to ensure validity
+        const user = firebase.auth().currentUser;
+        const token = user ? await user.getIdToken() : localStorage.getItem('token');
+
+        if (!token) {
+          console.warn('No auth token available for route calculation');
+          return;
+        }
+
         const response = await fetch(
           `${API_CONFIG.BASE_URL}/rides/route?pickup=${pickupLon},${pickupLat}&drop=${dropLon},${dropLat}`,
           {
