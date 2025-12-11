@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String },
   email: { type: String, unique: true, sparse: true },
   phone: { type: String, unique: true, sparse: true },
+  password: { type: String }, // For backend auth
   passwordHash: { type: String }, // Optional for Firebase users
   firebaseUid: { type: String, unique: true, sparse: true }, // Firebase UID
   role: { type: String, enum: ['rider', 'driver', 'captain', 'admin'], default: 'rider' },

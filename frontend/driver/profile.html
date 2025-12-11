@@ -1009,17 +1009,12 @@
       }
 
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_CONFIG.BASE_URL}/auth/profile`, {
+        const response = await apiFetch('/auth/profile', {
           method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updateData)
+          body: updateData
         });
 
-        const data = await response.json();
+        const data = response.data;
 
         if (response.ok && data.user) {
           Auth.setCurrent(data.user);

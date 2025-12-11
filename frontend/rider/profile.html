@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -330,11 +331,11 @@
       border-radius: 50%;
     }
 
-    .toggle-switch input:checked + .toggle-slider {
+    .toggle-switch input:checked+.toggle-slider {
       background: var(--primary);
     }
 
-    .toggle-switch input:checked + .toggle-slider:before {
+    .toggle-switch input:checked+.toggle-slider:before {
       transform: translateX(22px);
     }
 
@@ -557,6 +558,7 @@
   </style>
   <script src="../../../../../../../common/js/config.js"></script>
 </head>
+
 <body>
   <header class="topbar">
     <div class="topbar-left">
@@ -569,7 +571,8 @@
     <div class="topbar-right">
       <button class="btn-logout" onclick="logout()">
         <span>Logout</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
           <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -584,7 +587,8 @@
       <div class="avatar-container">
         <div class="profile-avatar" id="profileAvatar">?</div>
         <button class="avatar-edit-btn" onclick="showAvatarModal()" title="Change avatar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
           </svg>
@@ -609,14 +613,15 @@
     <!-- Personal Information -->
     <section class="section">
       <h2 class="section-title">Personal Information</h2>
-      
+
       <div class="info-grid">
         <div class="info-item">
           <span class="info-label">Full Name</span>
           <div class="info-value" id="nameContainer">
             <span id="infoName">—</span>
             <span class="edit-icon" onclick="toggleEdit('name')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
               </svg>
@@ -704,46 +709,46 @@
     // Load user data with Firebase auth
     firebase.auth().onAuthStateChanged(async (user) => {
       console.log('🔐 Profile auth state changed:', user ? user.uid : 'null');
-      
+
       if (!user) {
         console.warn('❌ No Firebase user, redirecting to signin');
         window.location.href = '../common/signin.html';
         return;
       }
-      
+
       try {
         console.log('📡 Fetching user data from backend...');
         // Fetch user data from backend
         const response = await apiFetch('/auth/me');
         console.log('📥 Backend response:', response);
-        
+
         if (!response.ok) {
           console.error('❌ Backend returned error:', response.status, response.data);
           window.location.href = '../common/signin.html';
           return;
         }
-        
+
         if (!response.data || !response.data.user) {
           console.error('❌ No user data in response:', response.data);
           window.location.href = '../common/signin.html';
           return;
         }
-        
+
         console.log('✅ User data loaded:', response.data.user.name);
         const userData = response.data.user;
-        
+
         // Set user information
         if (userData.name) {
           document.getElementById('profileName').textContent = userData.name;
           document.getElementById('infoName').textContent = userData.name;
           document.getElementById('profileAvatar').textContent = userData.name.charAt(0).toUpperCase();
         }
-        
+
         if (userData.email) {
           document.getElementById('profileEmail').textContent = userData.email;
           document.getElementById('infoEmail').textContent = userData.email;
         }
-        
+
         if (userData.phone) {
           document.getElementById('infoPhone').textContent = userData.phone;
         } else {
@@ -773,7 +778,7 @@
     async function loadProfileStats() {
       try {
         const response = await apiFetch('/auth/stats');
-        
+
         if (response.ok && response.data) {
           const stats = response.data.stats;
           document.getElementById('profileTotalRides').textContent = stats.completedRides || 0;
@@ -792,16 +797,16 @@
       const valueSpan = document.getElementById(`info${fieldName}`);
       const currentValue = valueSpan.textContent;
       const inputValue = (currentValue === '—' || currentValue === 'Not provided') ? '' : currentValue;
-      
+
       // Set modal content
       document.getElementById('editModalTitle').textContent = `Edit ${fieldName}`;
       document.getElementById('editFieldLabel').textContent = fieldName;
       document.getElementById('editFieldInput').value = inputValue;
       document.getElementById('editFieldInput').type = fieldType === 'email' ? 'email' : 'text';
-      
+
       // Show modal
       document.getElementById('editModal').style.display = 'flex';
-      
+
       // Focus input
       setTimeout(() => {
         const input = document.getElementById('editFieldInput');
@@ -837,32 +842,31 @@
 
     async function saveEditedField() {
       if (!currentEditField) return;
-      
+
       const input = document.getElementById('editFieldInput');
       const newValue = input.value.trim();
-      
+
       if (!newValue) {
         alert('Value cannot be empty');
         return;
       }
-      
+
       try {
         const fieldName = currentEditField.charAt(0).toUpperCase() + currentEditField.slice(1);
-        
-        // TODO: Add API call to update user profile
-        // const token = localStorage.getItem('token');
-        // const response = await fetch(`${API_CONFIG.BASE_URL}/auth/profile`, {
-        //   method: 'PATCH',
-        //   headers: {
-        //     'Authorization': `Bearer ${token}`,
-        //     'Content-Type': 'application/json'
-        //   },
-        //   body: JSON.stringify({ [currentEditField]: newValue })
-        // });
-        
+
+        // API call to update user profile
+        const response = await apiFetch('/auth/profile', {
+          method: 'PUT',
+          body: { [currentEditField]: newValue }
+        });
+
+        if (!response.ok) {
+          throw new Error(response.data?.error || 'Failed to update profile');
+        }
+
         // Update the UI
         document.getElementById(`info${fieldName}`).textContent = newValue;
-        
+
         // Also update profile header if it's the name
         if (currentEditField === 'name') {
           document.getElementById('profileName').textContent = newValue;
@@ -871,7 +875,7 @@
             document.getElementById('profileAvatar').textContent = newValue.charAt(0).toUpperCase();
           }
         }
-        
+
         console.log(`Updated ${currentEditField} to: ${newValue}`);
         hideEditModal();
       } catch (error) {
@@ -923,13 +927,13 @@
 
     async function saveAvatar() {
       if (!selectedAvatarId) return;
-      
+
       try {
         const response = await apiFetch('/auth/avatar', {
           method: 'PUT',
           body: { avatar: selectedAvatarId }
         });
-        
+
         if (response.ok && response.data && response.data.success) {
           // Update profile avatar display
           updateAvatarDisplay(selectedAvatarId);
@@ -943,7 +947,7 @@
         console.error('Error saving avatar:', error);
         alert('Failed to update avatar');
       }
-      
+
       hideAvatarModal();
     }
 
@@ -967,13 +971,13 @@
     function showLogoutModal() {
       const modal = document.getElementById('logout-modal') || createLogoutModal();
       modal.style.display = 'flex';
-      
+
       // Focus the cancel button for keyboard access (Escape is default action)
       setTimeout(() => {
         const cancelBtn = modal.querySelector('.btn-secondary');
         if (cancelBtn) cancelBtn.focus();
       }, 100);
-      
+
       // Add keyboard listener
       document.addEventListener('keydown', handleLogoutModalKeydown);
     }
@@ -981,7 +985,7 @@
     function handleLogoutModalKeydown(e) {
       const modal = document.getElementById('logout-modal');
       if (!modal || modal.style.display === 'none') return;
-      
+
       if (e.key === 'Enter' || e.keyCode === 13) {
         e.preventDefault();
         e.stopPropagation();
@@ -1031,7 +1035,7 @@
         justify-content: center;
         z-index: 10000;
       `;
-      
+
       modal.innerHTML = `
         <div style="
           background: var(--glass-bg);
@@ -1056,11 +1060,11 @@
           </div>
         </div>
       `;
-      
+
       modal.addEventListener('click', (e) => {
         if (e.target === modal) hideLogoutModal();
       });
-      
+
       document.body.appendChild(modal);
       return modal;
     }
@@ -1083,4 +1087,5 @@
     }
   </script>
 </body>
+
 </html>

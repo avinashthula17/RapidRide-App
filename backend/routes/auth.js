@@ -606,11 +606,17 @@ router.put('/avatar', authenticateToken, async (req, res) => {
 // UPDATE PROFILE
 // ============================================================
 
-router.put('/profile', authenticateToken, async (req, res) => {
+router.put('/profile', firebaseAuthMiddleware, async (req, res) => {
   try {
     const { name, gender, avatar, vehicle, license } = req.body;
 
-    const user = await User.findById(req.user.id);
+    // Find user by Firebase UID or Email
+    const user = await User.findOne({
+      $or: [
+        { firebaseUid: req.user.uid },
+        { email: req.user.email }
+      ]
+    });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
