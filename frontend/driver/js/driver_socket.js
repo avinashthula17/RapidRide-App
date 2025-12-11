@@ -194,12 +194,12 @@
       const user = firebase.auth().currentUser;
       if (!user) throw new Error('Not authenticated');
 
-      const response = await apiFetch('/rides/accept', {
+      const response = await apiFetch(`/rides/${rideId}/accept`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: { rideId }
+        body: {}
       });
 
       const data = response.data;
