@@ -15,9 +15,8 @@ if (!window.API_CONFIG) {
         async init() {
             if (!this.isLocal && !this.backendIP) {
                 try {
-                    // Try fetching from root (relative path)
-                    // This works if backend-config.json is deployed with the frontend
-                    const response = await fetch('/backend-config.json');
+                    // Try fetching from root with timestamp to prevent caching
+                    const response = await fetch('/backend-config.json?v=' + new Date().getTime());
                     if (response.ok) {
                         const config = await response.json();
                         this.backendIP = config.ip;
