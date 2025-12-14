@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin Dashboard — RapidRide</title>
   <link rel="stylesheet" href="../common/css/global.css">
+  <script src="../common/js/config.js"></script>
   <style>
     body {
       padding: 0;
@@ -723,9 +724,9 @@
         }
 
         if (!user) {
-          console.error('No user found, but token exists - trying again in 2 seconds...');
-          // Don't immediately redirect - give it another chance
-          setTimeout(() => window.location.reload(), 2000);
+          console.error('No user found even with token. Redirecting to login...');
+          localStorage.removeItem('token'); // Token is likely invalid
+          window.location.href = 'admin_login.html';
           return;
         }
 
@@ -758,8 +759,9 @@
         if (!token) {
           window.location.href = 'admin_login.html';
         } else {
-          console.log('Token still exists - reloading page instead of logout');
-          setTimeout(() => window.location.reload(), 2000);
+          console.error('Auth error with token. Redirecting to login.');
+          localStorage.removeItem('token');
+          window.location.href = 'admin_login.html';
         }
       }
     });
@@ -873,39 +875,39 @@
         console.log('Loading support tickets...');
         console.log('Token:', token ? 'Present' : 'Missing');
 
-        const response = await fetch(`${API_CONFIG.BASE_URL} /support/admin / chats', {
-        headers: { 'Authorization': `Bearer ${ token }` }
-      });
+        const response = await fetch(`${API_CONFIG.BASE_URL}/support/admin/chats`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
 
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Response data:', data);
+        console.log('Response status:', response.status);
+        const data = await response.json();
+        console.log('Response data:', data);
 
-      if (data.success) {
-        allChats = data.chats;
-        console.log('Loaded chats:', allChats.length);
-        document.getElementById('supportTickets').textContent = allChats.filter(c => c.status === 'active').length;
-        renderChats();
-      } else {
-        console.error('Failed to load chats:', data.message);
-        document.getElementById('ticketsTableBody').innerHTML = `
+        if (data.success) {
+          allChats = data.chats;
+          console.log('Loaded chats:', allChats.length);
+          document.getElementById('supportTickets').textContent = allChats.filter(c => c.status === 'active').length;
+          renderChats();
+        } else {
+          console.error('Failed to load chats:', data.message);
+          document.getElementById('ticketsTableBody').innerHTML = `
         < tr >
         <td colspan="7">
           <div class="empty-state">${data.message || 'Failed to load tickets'}</div>
         </td>
             </tr >
           `;
-      }
-    } catch (error) {
-      console.error('Failed to load support tickets:', error);
-      document.getElementById('ticketsTableBody').innerHTML = `
+        }
+      } catch (error) {
+        console.error('Failed to load support tickets:', error);
+        document.getElementById('ticketsTableBody').innerHTML = `
           < tr >
           <td colspan="7">
             <div class="empty-state">Failed to load tickets. Please refresh.</div>
           </td>
           </tr >
           `;
-    }
+      }
     }
 
     function filterChats(filter) {
@@ -988,8 +990,8 @@
       try {
         console.log('Loading messages for chat:', chatId);
         const token = localStorage.getItem('token');
-        const response = await fetch(`${ API_CONFIG.BASE_URL } /support/chats / ${ chatId }?_t = ${ Date.now() } `, {
-          headers: { 'Authorization': `Bearer ${ token } ` }
+        const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${chatId}?_t=${Date.now()}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
 
         console.log('Message response status:', response.status);
@@ -1001,8 +1003,8 @@
           console.log('Chat messages:', chat.messages);
 
           // Update header
-          document.getElementById('chatUserName').textContent = `${ chat.userName } (${ chat.userType })`;
-          document.getElementById('chatTicketInfo').textContent = `Ticket: ${ chat.ticketNumber } • ${ chat.status } `;
+          document.getElementById('chatUserName').textContent = `${chat.userName} (${chat.userType})`;
+          document.getElementById('chatTicketInfo').textContent = `Ticket: ${chat.ticketNumber} • ${chat.status} `;
 
           // Hide input container and end button if chat is ended
           const inputContainer = document.querySelector('.chat-modal .chat-input-container');
@@ -1028,7 +1030,7 @@
           chat.messages.forEach(msg => {
             const isAdmin = msg.senderType === 'admin';
             const messageEl = document.createElement('div');
-            messageEl.className = `chat - message ${ isAdmin ? 'admin' : '' } `;
+            messageEl.className = `chat - message ${isAdmin ? 'admin' : ''} `;
 
             const avatar = document.createElement('div');
             avatar.className = 'chat-avatar';
@@ -1082,26 +1084,26 @@
 
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${ API_CONFIG.BASE_URL } /support/chats / ${ currentChatId }/messages`, {
-        method: 'POST',
+        const response = await fetch(`${API_CONFIG.BASE_URL} /support/chats / ${currentChatId}/messages`, {
+          method: 'POST',
           headers: {
-          'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message })
-      });
+          },
+          body: JSON.stringify({ message })
+        });
 
-      const data = await response.json();
-      if (data.success) {
-        input.value = '';
-        input.style.height = 'auto';
-        await loadChatMessages(currentChatId);
-        await loadSupportTickets(); // Refresh ticket list
+        const data = await response.json();
+        if (data.success) {
+          input.value = '';
+          input.style.height = 'auto';
+          await loadChatMessages(currentChatId);
+          await loadSupportTickets(); // Refresh ticket list
+        }
+      } catch (error) {
+        console.error('Failed to send message:', error);
+        alert('Failed to send message. Please try again.');
       }
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      alert('Failed to send message. Please try again.');
-    }
     }
 
     // Auto-resize textarea
@@ -1173,8 +1175,8 @@
     async function fetchTotalRides() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_CONFIG.BASE_URL}/rides/admin/count', {
-          headers: { 'Authorization': `Bearer ${ token }` }
+        const response = await fetch(`${API_CONFIG.BASE_URL}/rides/admin/count`, {
+          headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.ok) {
