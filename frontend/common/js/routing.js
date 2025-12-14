@@ -31,13 +31,17 @@
 
             if (ORS_API_KEY && ORS_API_KEY !== 'YOUR_API_KEY_HERE') {
                 try {
-                    const orsUrl = `https://api.openrouteservice.org/v2/directions/driving-car?start=${startLng},${startLat}&end=${endLng},${endLat}`;
+                    // Use api_key query param to avoid CORS preflight issues with custom headers
+                    const orsUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${startLng},${startLat}&end=${endLng},${endLat}`;
 
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 3000);
 
                     const response = await fetch(orsUrl, {
-                        headers: { 'Authorization': ORS_API_KEY },
+                        // Remove Authorization header to simplify CORS
+                        headers: {
+                            'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8'
+                        },
                         signal: controller.signal
                     });
                     clearTimeout(timeoutId);
