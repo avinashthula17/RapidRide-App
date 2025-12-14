@@ -83,6 +83,42 @@
       outline: none;
       background: rgba(239, 68, 68, 0.1);
     }
+
+    /* Tabs */
+    .auth-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      color: #888;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-weight: 500;
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 8px;
+      color: white;
+      margin-bottom: 15px;
+    }
   </style>
   <script src="../common/js/config.js"></script>
 </head>
@@ -94,60 +130,80 @@
       <div class="text-center mb-4">
         <div class="admin-badge-icon">🔐</div>
         <h2 style="margin-bottom: 0.5rem; color: white;">Admin Portal</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Restricted Access: Authorized Number Only</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Restricted Access: Authorized Personnel Only</p>
+      </div>
+
+      <div class="auth-tabs">
+        <div class="auth-tab" id="tabEmail" onclick="switchTab('email')">Email Login</div>
+        <div class="auth-tab active" id="tabPhone" onclick="switchTab('phone')">Phone Login</div>
       </div>
 
       <div id="errorMsg" class="error-msg"></div>
       <div id="successMsg" class="success-msg"></div>
 
-      <!-- Step 1: Phone Number -->
-      <div id="phoneStep">
-        <form id="phoneForm">
-          <div class="input-group">
-            <label style="color: var(--text-muted);">Admin Phone Number</label>
-            <div style="display: flex; gap: 0.5rem;">
-              <input type="text" value="+91" disabled
-                style="width: 60px; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); color: #888; text-align: center;"
-                class="input-field">
-              <input type="tel" id="phoneNumber" class="input-field" placeholder="9705637783" required autofocus
-                style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: white; letter-spacing: 1px;">
-            </div>
-          </div>
+      <!-- Email Login Form -->
+      <div id="emailStep" style="display: none;">
+        <form id="emailForm">
+          <input type="email" id="adminEmail" class="input-field" placeholder="Admin Email" required>
+          <input type="password" id="adminPassword" class="input-field" placeholder="Password" required>
 
-          <div id="recaptcha-container" style="margin-top: 1rem; display: flex; justify-content: center;"></div>
-
-          <button type="submit" id="sendOtpBtn" class="btn w-full mt-4"
+          <button type="submit" id="emailLoginBtn" class="btn w-full mt-2"
             style="background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; font-weight: 600; padding: 0.85rem;">
-            Send OTP
+            Login
           </button>
         </form>
       </div>
 
-      <!-- Step 2: OTP Verification -->
-      <div id="otpStep" style="display: none;">
-        <div class="text-center mb-4">
-          <p style="color: #ccc;">Enter the 6-digit code sent to your number</p>
+      <!-- Phone Login Flow -->
+      <div id="phoneFlow">
+        <!-- Step 1: Phone Number -->
+        <div id="phoneStep">
+          <form id="phoneForm">
+            <div class="input-group">
+              <label style="color: var(--text-muted);">Admin Phone Number</label>
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <input type="text" value="+91" disabled
+                  style="width: 60px; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); color: #888; text-align: center; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                <input type="tel" id="phoneNumber" class="input-field" placeholder="9705637783" required
+                  style="margin-bottom: 0; letter-spacing: 1px;">
+              </div>
+            </div>
+
+            <div id="recaptcha-container" style="margin-top: 1rem; display: flex; justify-content: center;"></div>
+
+            <button type="submit" id="sendOtpBtn" class="btn w-full mt-4"
+              style="background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; font-weight: 600; padding: 0.85rem;">
+              Send OTP
+            </button>
+          </form>
         </div>
-        <form id="otpForm">
-          <div class="otp-inputs">
-            <input type="text" class="otp-input" maxlength="1" pattern="\d*">
-            <input type="text" class="otp-input" maxlength="1" pattern="\d*">
-            <input type="text" class="otp-input" maxlength="1" pattern="\d*">
-            <input type="text" class="otp-input" maxlength="1" pattern="\d*">
-            <input type="text" class="otp-input" maxlength="1" pattern="\d*">
-            <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+
+        <!-- Step 2: OTP Verification -->
+        <div id="otpStep" style="display: none;">
+          <div class="text-center mb-4">
+            <p style="color: #ccc;">Enter the 6-digit code sent to your number</p>
           </div>
+          <form id="otpForm">
+            <div class="otp-inputs">
+              <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+              <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+              <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+              <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+              <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+              <input type="text" class="otp-input" maxlength="1" pattern="\d*">
+            </div>
 
-          <button type="submit" id="verifyOtpBtn" class="btn w-full mt-2"
-            style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; font-weight: 600; padding: 0.85rem;">
-            Verify & Login
-          </button>
+            <button type="submit" id="verifyOtpBtn" class="btn w-full mt-2"
+              style="background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; font-weight: 600; padding: 0.85rem;">
+              Verify & Login
+            </button>
 
-          <button type="button" onclick="location.reload()" class="btn w-full mt-3"
-            style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 0.5rem;">
-            Go Back
-          </button>
-        </form>
+            <button type="button" onclick="location.reload()" class="btn w-full mt-3"
+              style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 0.5rem;">
+              Go Back
+            </button>
+          </form>
+        </div>
       </div>
 
       <div class="text-center mt-4">
@@ -168,6 +224,8 @@
 
     const phoneStep = document.getElementById('phoneStep');
     const otpStep = document.getElementById('otpStep');
+    const emailStep = document.getElementById('emailStep');
+    const phoneFlow = document.getElementById('phoneFlow');
     const errorMsg = document.getElementById('errorMsg');
     const successMsg = document.getElementById('successMsg');
 
@@ -186,9 +244,28 @@
       errorMsg.style.display = 'none';
     }
 
-    // Initialize Recaptcha
+    function switchTab(tab) {
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      if (tab === 'email') {
+        document.getElementById('tabEmail').classList.add('active');
+        document.getElementById('tabPhone').classList.remove('active');
+        emailStep.style.display = 'block';
+        phoneFlow.style.display = 'none';
+      } else {
+        document.getElementById('tabPhone').classList.add('active');
+        document.getElementById('tabEmail').classList.remove('active');
+        emailStep.style.display = 'none';
+        phoneFlow.style.display = 'block';
+      }
+    }
+
+    // Default to email login since that's what we just set up
+    switchTab('email');
+
+    // Initialize Recaptcha (only needed for phone flow)
     window.onload = function () {
-      // Clear any existing session
       localStorage.removeItem('token');
       localStorage.removeItem('user');
 
@@ -201,13 +278,53 @@
       window.recaptchaVerifier.render();
     };
 
-    // Handle Phone Submission
+    // --- EMAIL LOGIN HANDLER ---
+    document.getElementById('emailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+      const btn = document.getElementById('emailLoginBtn');
+
+      btn.disabled = true;
+      btn.textContent = 'Authenticating...';
+
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/auth/signin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          if (data.user.role === 'admin') {
+            showSuccess('✅ Access Granted. Redirecting...');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            setTimeout(() => window.location.href = 'admin_dashboard.html', 1500);
+          } else {
+            throw new Error('Access Denied: Admin privileges required.');
+          }
+        } else {
+          throw new Error(data.message || 'Login failed');
+        }
+      } catch (error) {
+        console.error(error);
+        showError(error.message || 'Authentication Failed');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    });
+
+    // --- PHONE LOGIN HANDLER ---
     document.getElementById('phoneForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const phoneInput = document.getElementById('phoneNumber').value.trim();
       const btn = document.getElementById('sendOtpBtn');
 
-      // 1. Strict Access Control Check
+      // Strict Access Control Check
       if (phoneInput !== ALLOWED_ADMIN_PHONE) {
         showError('🚫 ACCESS DENIED: This number is not authorized for Admin access.');
         return;
@@ -272,7 +389,7 @@
 
         showSuccess('OTP Verified! Checking Admin Permissions...');
 
-        // 2. Server-side Role Check
+        // Server-side Role Check
         const response = await fetch(`${API_CONFIG.BASE_URL}/auth/firebase-phone`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -300,7 +417,6 @@
         showError(error.message || 'Verification Failed');
 
         if (error.message.includes('Access Denied')) {
-          // Logout immediately if not admin
           await window.firebaseAuth.signOut();
           setTimeout(() => location.reload(), 2000);
         }

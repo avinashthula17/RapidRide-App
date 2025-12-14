@@ -25,8 +25,8 @@
 
             // 1. OpenRouteService (High Quality, requires Key)
             // ----------------------------------------------------
-            // 🔴 IMPORTANT: PASTE YOUR API KEY HERE
-            const ORS_API_KEY = '5b3ce3597851110001cf6248cc94b595213645cb972166663f730c45';
+            // 🔑 Key provided by User
+            const ORS_API_KEY = '5b3ce3597851110001cf62487e7a697be3534d1b8544a0160b8c644e';
             // ----------------------------------------------------
 
             if (ORS_API_KEY && ORS_API_KEY !== 'YOUR_API_KEY_HERE') {
