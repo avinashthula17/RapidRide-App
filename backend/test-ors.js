@@ -15,12 +15,14 @@ async function testRouting() {
     const start = '78.4747,17.3616';
     const end = '78.3725,17.4435';
 
-    const url = `https://api.openrouteservice.org/v2/directions/driving-car?start=${start}&end=${end}`;
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${start}&end=${end}`;
 
     try {
-        console.log('📡 Sending request to OpenRouteService...');
+        console.log('📡 Sending request to OpenRouteService (Query Param Method)...');
         const response = await axios.get(url, {
-            headers: { 'Authorization': ORS_API_KEY }
+            headers: {
+                'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8'
+            }
         });
 
         if (response.status === 200) {

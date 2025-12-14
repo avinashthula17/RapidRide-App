@@ -389,13 +389,16 @@ router.get('/route', firebaseAuthMiddleware, async (req, res) => {
     const orsKey = process.env.ORS_API_KEY;
     if (orsKey) {
       try {
-        const orsUrl = `https://api.openrouteservice.org/v2/directions/driving-car?start=${pickup}&end=${drop}`;
-        console.log('🗺️ Trying ORS Routing...');
+        // Use api_key query parameter instead of Header (based on user feedback)
+        const orsUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${orsKey}&start=${pickup}&end=${drop}`;
+        console.log('🗺️ Trying ORS Routing (Query Param)...');
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 3000);
 
         const orsResponse = await fetch(orsUrl, {
-          headers: { 'Authorization': orsKey },
+          headers: {
+            'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8'
+          },
           signal: controller.signal
         });
         clearTimeout(timeout);
