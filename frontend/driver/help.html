@@ -1110,18 +1110,18 @@
       try {
         console.log('Loading chat list...');
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats', {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${ token }`
+            'Authorization': `Bearer ${token}`
           }
         });
-        
+
         console.log('Chat list response status:', response.status);
         const data = await response.json();
         console.log('Chat list data:', data);
         const container = document.getElementById('chatListContainer');
-        
+
         if (data.chats && data.chats.length > 0) {
           container.innerHTML = '';
           data.chats.forEach(chat => {
@@ -1148,44 +1148,44 @@
       const div = document.createElement('div');
       div.className = 'chat-list-item';
       div.onclick = () => openExistingChat(chat.chatId);
-      
+
       const header = document.createElement('div');
       header.className = 'chat-list-header';
-      
+
       const ticket = document.createElement('span');
       ticket.className = 'chat-ticket';
       ticket.textContent = chat.ticketNumber;
-      
+
       const badge = document.createElement('span');
-      badge.className = `chat - status - badge ${ chat.status } `;
+      badge.className = `chat-status-badge ${chat.status}`;
       badge.textContent = chat.status;
-      
+
       header.appendChild(ticket);
       header.appendChild(badge);
-      
+
       const preview = document.createElement('div');
       preview.className = 'chat-list-preview';
       preview.textContent = chat.lastMessage || 'No messages yet';
-      
+
       const footer = document.createElement('div');
       footer.className = 'chat-list-footer';
-      
+
       const date = document.createElement('span');
       date.textContent = new Date(chat.updatedAt).toLocaleDateString();
-      
+
       footer.appendChild(date);
-      
+
       if (chat.unreadCount > 0) {
         const unreadBadge = document.createElement('span');
         unreadBadge.className = 'chat-unread-badge';
-        unreadBadge.textContent = `${ chat.unreadCount } new `;
+        unreadBadge.textContent = `${chat.unreadCount} new`;
         footer.appendChild(unreadBadge);
       }
-      
+
       div.appendChild(header);
       div.appendChild(preview);
       div.appendChild(footer);
-      
+
       return div;
     }
 
@@ -1202,21 +1202,21 @@
     async function loadChatMessages(chatId) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${ API_CONFIG.BASE_URL } /support/chats / ${ chatId } `, {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${chatId}`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${ token } `
+            'Authorization': `Bearer ${token}`
           }
         });
-        
+
         const data = await response.json();
         if (data.success) {
           const chat = data.chat;
           currentTicketNumber = chat.ticketNumber;
-          
+
           // Update ticket number display
-          document.getElementById('chatTicketNumber').textContent = `Ticket: ${ chat.ticketNumber } `;
-          
+          document.getElementById('chatTicketNumber').textContent = `Ticket: ${chat.ticketNumber}`;
+
           // Update end button visibility
           const endBtn = document.getElementById('endChatBtn');
           if (chat.status === 'ended') {
@@ -1224,7 +1224,7 @@
           } else {
             endBtn.style.display = 'block';
           }
-          
+
           // Hide input container if chat is ended
           const inputContainer = document.querySelector('.chat-input-container');
           if (chat.status === 'ended') {
@@ -1232,10 +1232,10 @@
           } else {
             inputContainer.style.display = 'flex';
           }
-          
+
           const messagesContainer = document.getElementById('chatMessages');
           messagesContainer.innerHTML = '';
-          
+
           if (chat.messages.length > 0) {
             chat.messages.forEach(msg => {
               const isSent = msg.senderType === 'captain';
@@ -1244,7 +1244,7 @@
             });
             lastMessageTimestamp = chat.messages[chat.messages.length - 1].timestamp;
           }
-          
+
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
       } catch (error) {
@@ -1268,20 +1268,20 @@
     async function checkNewMessages() {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${ API_CONFIG.BASE_URL } /support/chats / ${ currentChatId } `, {
+        const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${currentChatId}`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${ token } `
+            'Authorization': `Bearer ${token}`
           }
         });
-        
+
         const data = await response.json();
         if (data.success) {
           const chat = data.chat;
-          const newMessages = chat.messages.filter(msg => 
+          const newMessages = chat.messages.filter(msg =>
             !lastMessageTimestamp || msg.timestamp > lastMessageTimestamp
           );
-          
+
           if (newMessages.length > 0) {
             const messagesContainer = document.getElementById('chatMessages');
             newMessages.forEach(msg => {
@@ -1321,47 +1321,47 @@
     async function sendMessage() {
       const input = document.getElementById('chatInput');
       const message = input.value.trim();
-      
+
       if (message && currentChatId) {
         try {
           const token = localStorage.getItem('token');
-          const response = await fetch(`${ API_CONFIG.BASE_URL } /support/chats / ${ currentChatId }/messages`, {
-        method: 'POST',
-          headers: {
-          'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message })
-      });
+          const response = await fetch(`${API_CONFIG.BASE_URL}/support/chats/${currentChatId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message })
+          });
 
-      const data = await response.json();
-      if (data.success) {
-        const messagesContainer = document.getElementById('chatMessages');
+          const data = await response.json();
+          if (data.success) {
+            const messagesContainer = document.getElementById('chatMessages');
 
-        // Remove empty state if present
-        const emptyState = messagesContainer.querySelector('.chat-empty');
-        if (emptyState) {
-          emptyState.remove();
+            // Remove empty state if present
+            const emptyState = messagesContainer.querySelector('.chat-empty');
+            if (emptyState) {
+              emptyState.remove();
+            }
+
+            // Add message to UI
+            const userMessage = createMessageElement(message, true);
+            messagesContainer.appendChild(userMessage);
+
+            // Clear input
+            input.value = '';
+            input.style.height = 'auto';
+
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Update last message timestamp
+            lastMessageTimestamp = new Date().toISOString();
+          }
+        } catch (error) {
+          console.error('Failed to send message:', error);
+          alert('Failed to send message. Please try again.');
         }
-
-        // Add message to UI
-        const userMessage = createMessageElement(message, true);
-        messagesContainer.appendChild(userMessage);
-
-        // Clear input
-        input.value = '';
-        input.style.height = 'auto';
-
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-        // Update last message timestamp
-        lastMessageTimestamp = new Date().toISOString();
-      }
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      alert('Failed to send message. Please try again.');
-    }
       }
     }
 
