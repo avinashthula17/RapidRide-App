@@ -387,13 +387,16 @@ router.get('/route', firebaseAuthMiddleware, async (req, res) => {
 
     // 1. Try OpenRouteService (if Key available)
     const orsKey = process.env.ORS_API_KEY;
+    console.log(`🔍 DEBUG ROUNTING: Key available? ${!!orsKey}, Length: ${orsKey ? orsKey.length : 0}`);
+
     if (orsKey) {
       try {
-        // Use api_key query parameter instead of Header (based on user feedback)
+        // Use api_key query parameter instead of Header
         const orsUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${orsKey}&start=${pickup}&end=${drop}`;
         console.log('🗺️ Trying ORS Routing (Query Param)...');
+
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
+        const timeout = setTimeout(() => controller.abort(), 10000); // Increased to 10s to match/exceed test script
 
         const orsResponse = await fetch(orsUrl, {
           headers: {
@@ -403,11 +406,13 @@ router.get('/route', firebaseAuthMiddleware, async (req, res) => {
         });
         clearTimeout(timeout);
 
+        console.log(`   ORS Status: ${orsResponse.status}`);
+
         if (orsResponse.ok) {
           const data = await orsResponse.json();
           // Convert ORS GeoJSON to OSRM format
           if (data.features && data.features.length > 0) {
-            console.log('✅ ORS Success');
+            console.log('✅ ORS Success in Backend!');
             const feature = data.features[0];
             return res.json({
               code: 'Ok',
@@ -419,12 +424,15 @@ router.get('/route', firebaseAuthMiddleware, async (req, res) => {
                 weight: feature.properties.summary.duration
               }]
             });
+          } else {
+            console.warn('⚠️ ORS returned OK but no features/routes found.');
           }
         } else {
-          console.warn(`⚠️ ORS Request Failed: ${orsResponse.status}`);
+          const errText = await orsResponse.text();
+          console.warn(`⚠️ ORS Request Failed: ${orsResponse.status} - ${errText}`);
         }
       } catch (orsErr) {
-        console.warn('⚠️ ORS Error:', orsErr.message);
+        console.warn(`⚠️ ORS Error: ${orsErr.name === 'AbortError' ? 'TIMEOUT' : orsErr.message}`);
       }
     }
 
