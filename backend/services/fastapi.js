@@ -8,13 +8,24 @@ const FASTAPI_BASE_URL = process.env.FASTAPI_URL || 'http://localhost:8001';
  */
 class FastAPIService {
   constructor() {
+    this.baseURL = process.env.FASTAPI_URL || 'http://localhost:8001';
     this.client = axios.create({
-      baseURL: FASTAPI_BASE_URL,
-      timeout: 10000,
+      baseURL: this.baseURL,
+      timeout: 5000,
       headers: {
         'Content-Type': 'application/json'
       }
     });
+  }
+
+  async healthCheck() {
+    try {
+      const response = await this.client.get('/health');
+      return response.status === 200;
+    } catch (error) {
+      console.warn('⚠️ ML Service Health Check Failed:', error.message);
+      return false;
+    }
   }
 
   /**
@@ -25,7 +36,7 @@ class FastAPIService {
   async calculateFare(params) {
     try {
       const { origin, destination, traffic_level = 1.0 } = params;
-      
+
       const response = await this.client.post('/fare/calc', {
         origin,
         destination,
@@ -36,7 +47,7 @@ class FastAPIService {
       return response.data;
     } catch (error) {
       console.error('FastAPI fare calculation error:', error.message);
-      
+
       // Fallback to simple calculation if FastAPI is down
       const distance = this.calculateDistance(params.origin, params.destination);
       return {
@@ -56,7 +67,7 @@ class FastAPIService {
   async predictETA(params) {
     try {
       const { origin, destination, traffic_level = 1.0 } = params;
-      
+
       const response = await this.client.post('/predict/eta', {
         origin,
         destination,
@@ -67,11 +78,11 @@ class FastAPIService {
       return response.data;
     } catch (error) {
       console.error('FastAPI ETA prediction error:', error.message);
-      
+
       // Fallback to simple calculation
       const distance = this.calculateDistance(params.origin, params.destination);
       const eta_seconds = Math.round((distance / 30) * 3600); // 30 km/h average
-      
+
       return {
         eta_seconds,
         confidence: 0.5,
@@ -95,7 +106,7 @@ class FastAPIService {
       return response.data;
     } catch (error) {
       console.error('FastAPI geocoding error:', error.message);
-      
+
       return {
         formatted_address: `Location: ${lat}, ${lon}`,
         fallback: true
@@ -131,9 +142,9 @@ class FastAPIService {
     const dLon = (coord2.lng - coord1.lng) * Math.PI / 180;
 
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1) * Math.cos(lat2) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    
+      Math.cos(lat1) * Math.cos(lat2) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
 

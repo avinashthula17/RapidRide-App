@@ -247,6 +247,15 @@ const socketAuthMiddleware = async (socket, next) => {
 
     // Use Firebase Admin SDK to verify token
     const { admin, firebaseInitialized } = require('./config/firebase');
+    const fastapi = require('./services/fastapi');
+
+    // Initialize services
+    (async () => {
+      // Check ML Service Health
+      const isMLConnected = await fastapi.healthCheck();
+      console.log(isMLConnected ? '✅ Connected to ML Service (FastAPI)' : '⚠️ Could not connect to ML Service (FastAPI)');
+    })();
+
 
     if (!firebaseInitialized) {
       console.warn('Firebase not initialized, skipping WebSocket auth');
