@@ -1008,13 +1008,50 @@
       }
     }
 
-    // Show available vehicles
-    function showVehicles(distance) {
+    // Show available vehicles with ML pricing
+    async function showVehicles(distance) {
       const section = document.getElementById('vehicleSection');
       const grid = document.getElementById('vehicleGrid');
 
+      // Default to static calculation if API fails
+      let mlFare = null;
+
+      try {
+        const pickupLat = pickupMarker.getLatLng().lat;
+        const pickupLng = pickupMarker.getLatLng().lng;
+        const dropLat = dropMarker.getLatLng().lat;
+        const dropLng = dropMarker.getLatLng().lng;
+
+        // Call Backend for ML Estimate
+        const response = await apiFetch('/rides/estimate', {
+          method: 'POST',
+          body: {
+            pickup: { lat: pickupLat, lng: pickupLng },
+            destination: { lat: dropLat, lng: dropLng }
+          }
+        });
+
+        if (response.ok && response.data) {
+          console.log('✅ ML Estimate:', response.data);
+          mlFare = response.data.fare; // Base predicted fare
+        }
+      } catch (err) {
+        console.warn('⚠️ ML Estimate failed, using static fare:', err);
+      }
+
       grid.innerHTML = VEHICLES.map(v => {
-        const price = Math.round(v.baseRate + (distance * v.perKm));
+        // Use ML fare if available, otherwise static
+        // Adjust ML fare slightly based on vehicle type multiplier
+        let price;
+        if (mlFare) {
+          // Simple multipliers for vehicle types relative to base ML prediction
+          const multipliers = { 'bike': 0.5, 'auto': 0.8, 'car': 1.0, 'suv': 1.5, 'shuttle': 0.4 };
+          const mult = multipliers[v.type] || 1.0;
+          price = Math.round(mlFare * mult);
+        } else {
+          price = Math.round(v.baseRate + (distance * v.perKm));
+        }
+
         return `
           <div class="vehicle-card" onclick="selectVehicle('${v.type}', ${price})">
             <div class="vehicle-info">
