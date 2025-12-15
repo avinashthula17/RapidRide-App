@@ -76,8 +76,27 @@ router.post('/estimate', [
       })
     ]);
 
+    // --- PRICING SANE CEILING & FLOOR (Dynamic Pricing Logic) ---
+    // User Complaint: "Prices so low"
+    // Fix: Ensure price never drops below "Avg Bike Mileage Rate" baseline
+
+    // 1. Calculate Baseline "At Cost" Price (approx ₹12/km for car, ₹6/km for bike avg)
+    // We base the floor on a generic 'standard' ride (car) to be safe, then frontend can scale down for bike
+    const MIN_PER_KM = 12; // Floor rate per km (e.g. Fuel + Maintenance + Wage)
+    const BASE_FEE = 30;   // Minimum flag fall
+    const floorFare = BASE_FEE + (fareData.distance_km * MIN_PER_KM);
+
+    // 2. Use the greater of ML Prediction OR Floor
+    let finalFare = Math.max(fareData.fare, floorFare);
+
+    // 3. Apply Dynamic Surge if traffic is high
+    if (traffic > 1.2) {
+      finalFare = finalFare * traffic; // Simple multiplier for heavy traffic
+    }
+
     const result = {
-      fare: fareData.fare,
+      fare: Math.round(finalFare),    // Sane, profitable fare
+      original_ml_fare: fareData.fare, // Keep for debugging
       distance_km: fareData.distance_km,
       currency: fareData.currency,
       eta_seconds: etaData.eta_seconds,

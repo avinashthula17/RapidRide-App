@@ -55,6 +55,40 @@ p {
     font-size: 1.1rem;
 }
 
+/* Carousel Styles */
+.carousel-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.carousel-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}
+
+.carousel-card {
+    min-width: 250px;
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    scroll-snap-align: start;
+    border: 1px solid var(--glass-border);
+    transition: transform 0.2s;
+}
+
+.carousel-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
 /* Global Link Styles */
 a {
     color: var(--text-primary);
