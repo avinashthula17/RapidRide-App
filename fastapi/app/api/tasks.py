@@ -11,8 +11,11 @@ router = APIRouter(prefix="/tasks", tags=["Background Tasks"])
 
 class TrainModelRequest(BaseModel):
     """Request model for training"""
+    model_config = {"protected_namespaces": ()}
+    
     dataset_path: str = "data/training_rides.csv"
     model_path: str = "app/models/model.pkl"
+
 
 
 class TaskResponse(BaseModel):
