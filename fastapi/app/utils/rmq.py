@@ -93,11 +93,14 @@ def check_rabbitmq_connection(rabbitmq_url: str = None) -> bool:
     try:
         url = rabbitmq_url or os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
         params = pika.URLParameters(url)
+        params.connection_attempts = 1
+        params.retry_delay = 0
+        params.socket_timeout = 2
         
         connection = pika.BlockingConnection(params)
         connection.close()
         return True
         
     except Exception as e:
-        logger.error(f"RabbitMQ connection failed: {str(e)}")
+        logger.warning(f"RabbitMQ connection not available: {str(e)}")
         return False
