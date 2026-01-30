@@ -1,6 +1,37 @@
 // Location Autocomplete - Robust Version
 console.log('🚀 Autocomplete loading...');
 
+// Migrate old 'lon' format to 'lng' in localStorage
+(function migrateLonToLng() {
+  try {
+    // Migrate recent searches
+    const recent = localStorage.getItem('rr_recent_searches');
+    if (recent) {
+      const data = JSON.parse(recent);
+      const migrated = data.map(item => {
+        if (item.lon !== undefined && item.lng === undefined) {
+          return { ...item, lng: item.lon, lon: undefined };
+        }
+        return item;
+      });
+      localStorage.setItem('rr_recent_searches', JSON.stringify(migrated));
+    }
+
+    // Migrate last location
+    const lastLoc = localStorage.getItem('rr_last_location');
+    if (lastLoc) {
+      const data = JSON.parse(lastLoc);
+      if (data.lon !== undefined && data.lng === undefined) {
+        data.lng = data.lon;
+        delete data.lon;
+        localStorage.setItem('rr_last_location', JSON.stringify(data));
+      }
+    }
+  } catch (e) {
+    console.warn('Migration failed:', e);
+  }
+})();
+
 const PHOTON_API = 'https://photon.komoot.io/api/';
 const NOMINATIM_API = 'https://nominatim.openstreetmap.org/search';
 let userLocation = null;
